@@ -1,0 +1,142 @@
+\chapter{Stato dell'arte}
+\label{cap:stato_arte}
+
+Questo capitolo è dedicato ad una panoramica dei servizi AWS e delle best practices di sicurezza associate. Si analizza anche il significato di assurance e compliance nel contesto del cloud computing; in aggiunta un focus sul Center for Internet Security (CIS) e sul suo benchmark per AWS.
+
+\section{Amazon Web Services}
+\label{sec:aws}
+
+Amazon Web Services (AWS) è una piattaforma di cloud computing che offre una vasta gamma di servizi, tra cui calcolo, archiviazione, database e networking. I sistemi AWS sono progettati per essere altamente scalabili e flessibili, consentendo alle aziende di adattare le risorse in base alle proprie esigenze. Ad oggi AWS è il fornitore di servizi cloud più diffuso al mondo e copre circa il 31\% del mercato globale. Questo dato risulta stabile nel tempo, a testimonianza della solidità dell'infrastruttura AWS e della fiducia del mercato verso l'azienda. Insieme ad Azure e Google Cloud, AWS contribuisce a controllare oltre i due terzi del mercato globale, testimoniando la predominanza di questi pochi fornitori nel mercato cloud \cite{statista2024awsmarketshare}.
+
+Questo cloud provider offre una varietà di servizi, ed ognuno ha le proprie caratteristiche e funzionalità specifiche, ma tutti condividono un'architettura comune che consente agli utenti di accedere e gestire le risorse in modo semplice ed efficiente.
+
+AWS offre i 3 modelli di servizio tipici del cloud computing: Infrastructure as a Service (IaaS), Platform as a Service (PaaS) e Software as a Service (SaaS).
+
+IaaS consente agli utenti di noleggiare risorse hardware virtuali, come server e storage, senza dover gestire fisicamente l'infrastruttura: è particolarmente utile per le aziende che desiderano ridurre i costi e semplificare la gestione dell'infrastruttura IT. Con IaaS, gli utenti possono scalare rapidamente le risorse in base alle esigenze, senza dover investire in hardware costoso. PaaS è ideale per gli sviluppatori che desiderano concentrarsi sulla creazione di applicazioni senza doversi preoccupare della gestione dell'infrastruttura sottostante, mettendo a disposizione un ambiente di sviluppo completo. SaaS è perfetto per le aziende che desiderano accedere a software e applicazioni pronte all'uso via Internet, senza dover installare e gestire applicazioni in locale \cite{10823401}.
+
+Un esempio di servizio IaaS è Amazon EC2, che consente agli utenti di noleggiare server virtuali per eseguire applicazioni su macchine virtuali. I servizi PaaS includono AWS RDS, un database relazionale per l'archiviazione di grandi moli di dati. Infine, i servizi SaaS di AWS comprendono AWS Lambda Functions, che consentono di eseguire codice senza dover gestire l'infrastruttura sottostante.
+
+Visti gli innumerevoli servizi offerti da AWS, è fondamentale comprendere le best practice di sicurezza associate a ciascun servizio. AWS Security Hub è una risorsa offerta da AWS che consente agli utenti di monitorare e gestire la sicurezza delle proprie risorse. Security Hub aggrega i dati di sicurezza provenienti da diversi servizi AWS e fornisce una panoramica della sicurezza dell'account. Questo servizio si basa su una serie di standard di sicurezza, tra cui Payment Card Industry Data Security Standard (PCI DSS), National Institute of Standards and Technology (NIST) e Center for Internet Security (CIS) Foundations Benchmark.
+
+\section{Center for Internet Security}
+\label{sec:cis}
+
+Il \textit{Center for Internet Security} (CIS) è un'organizzazione no-profit riconosciuta a livello mondiale per la sua mission di migliorare la sicurezza informatica. Il CIS sviluppa e pubblica benchmark di sicurezza per vari sistemi e applicazioni, tra cui AWS. La verifica di conformità tramite questi benchmark garantisce conformità alle best practice stilate da ricercatori ed esperti del settore, adattandosi ad un panorama, quello della sicurezza informatica, in cui le minacce cambiano frequentemente. Inoltre l'automatizzazione di queste verifiche di conformità permette di ridurre al minimo la possibilità di errore umano nell'ambito di configurazioni errate, segnalando in tempo reale quali istanze siano potenzialmente a rischio \cite{10602274}.
+
+Il CIS AWS Foundations Benchmark è un insieme di \textbf{best practice} progettate per aiutare le organizzazioni a configurare e gestire in modo sicuro le proprie risorse AWS. Questo benchmark fornisce linee guida dettagliate su come proteggere le istanze computazionali, i servizi di archiviazione, la gestione degli accessi e altri aspetti critici della sicurezza cloud.
+
+Il documento è suddiviso in diverse \textbf{sezioni}, ognuna delle quali affronta un aspetto specifico della sicurezza AWS: Identity and Access Management, Storage, Logging, Monitoring e Networking. In ognuna di queste sezioni, il benchmark fornisce raccomandazioni dettagliate su ogni particolare servizio AWS ritenuto importante da rendere compliant e una serie di controlli di sicurezza da implementare descritti in maniera verbosa, con relative modalità di verifica e implementazione. In particolare, la struttura di ogni controllo include una descrizione del controllo, eventuali note sulla gestione delle eccezioni, il razionale del controllo, la modalità di esecuzione del controllo (sia da command-line che da console) e da ultimo le azioni da intraprendere in caso di non conformità. 
+
+AWS Security Hub supporta il \textbf{CIS AWS Foundations Benchmark v3}, che include 37 controlli di sicurezza suddivisi in 12 categorie. Nulla documentazione AWS ogni controllo è descritto in dettaglio, con indicazioni discorsive su come implementarlo e verificarne la conformità, con le spiegazioni necessarie per comprendere il motivo per cui è importante rispettare quel controllo, la severità e l'intervallo per la programmazione temporale del controllo. Se necessari, sono descritti anche parametri da configurare in input per la verifica di conformità. Inoltre, il benchmark suggerisce anche azioni da compiere in caso di non conformità, come ad esempio la modifica delle configurazioni o l'implementazione di misure di sicurezza aggiuntive \cite{cisawsbenchmarkv3}.
+
+Di seguito si riporta un esempio di controllo tratto dal documento CIS AWS Foundations Benchmark v3:
+
+\begin{mdframed}[backgroundcolor=gray!05, linecolor=gray!50]
+    \itshape
+    \textbf{1.4 Ensure MFA is enabled for the 'root' user account (Automated)}
+    \begin{itemize}
+        \item \textbf{Profile Applicability:} Level 1
+        \item \textbf{Description}: The 'root' user account is the most privileged user in an AWS account. Multi-factor Authentication (MFA) adds an extra layer of protection on top of a username and password. With MFA enabled, when a user signs in to an AWS website, they will be prompted for their username and password as well as for an authentication code from their AWS MFA device.
+        \item \textbf{Note}: When virtual MFA is used for 'root' accounts, it is recommended that the device used is NOT a personal device, but rather a dedicated mobile device (tablet or phone) that is kept charged and secured, independent of any individual personal devices ("non-personal virtual MFA"). This lessens the risks of losing access to the MFA due to device loss, device trade-in, or if the individual owning the device is no longer employed at the company.
+        
+        Where an AWS Organization is using centralized root access, root credentials can be removed from member accounts. In that case it is neither possible nor necessary to configure root MFA in the member account.
+
+        \item \textbf{Rationale}: Enabling MFA provides increased security for console access as it requires the authenticating principal to possess a device that emits a time-sensitive key and have knowledge of a credential.
+        
+        \item \textbf{Audit}: Perform the following to determine if the 'root' user account is enabled and has MFA setup:
+        
+        From Console:
+        \begin{enumerate}
+            \item Login to the AWS Management Console
+            \item Click \texttt{Services}
+            \item Click \texttt{IAM}
+            \item Click on \texttt{Credential Report}
+            \item This will download a .csv file which contains credential usage for all IAM users within an AWS Account - open this file
+            \item For the \texttt{<root\_account>} user, ensure the \texttt{mfa\_active} field is set to \texttt{TRUE} or the \texttt{password\_enabled} field is set to \texttt{FALSE}
+        \end{enumerate}
+
+        From Command Line:
+
+        \begin{enumerate}
+            \item Run the following command:
+\begin{lstlisting}[language=bash, xleftmargin=0pt, framexleftmargin=0pt]
+aws iam get-account-summary | grep "AccountMFAEnabled"
+aws iam get-account-summary | grep "AccountPasswordPresent"
+\end{lstlisting}
+            \item Ensure the \texttt{AccountMFAEnabled} property is set to 1 or the \texttt{AccountPasswordPresent} property is set to 0.
+        \end{enumerate}
+        \item \textbf{Remediation}: To manage MFA devices for the 'root' AWS account, you must use your 'root' account credentials to sign in to AWS. You cannot manage MFA devices for the 'root' account using other credentials. Perform the following to establish MFA for the 'root' user account:
+        
+        \dots
+
+    \end{itemize}
+    \end{mdframed}
+
+    \footnote{Contenuto tratto da CIS Amazon Web Services Foundations Benchmark v3, sezione 1.4, disponibile su \url{https://www.cisecurity.org/benchmark/amazon_web_services/}.}
+
+Il controllo sopra riportato è un esempio rappresentativo di come il benchmark \textit{CIS AWS Foundations Benchmark v3} definisca i controlli di sicurezza in modo dettagliato e sistematico. Ogni controllo è concepito per essere comprensibile anche da team tecnici non specializzati in sicurezza e, allo stesso tempo, sufficientemente rigoroso da rispondere a requisiti di conformità industriali o normativi.
+
+I controlli sono classificati in due livelli di severità (\textbf{Level 1} e \textbf{Level 2}), che rappresentano rispettivamente un compromesso tra facilità di implementazione e livello di protezione offerto. I controlli di \textbf{Level 1} forniscono una baseline di sicurezza consigliata per la maggior parte degli ambienti, mentre quelli di \textbf{Level 2} sono più restrittivi e adatti a contesti ad alto rischio o soggetti a regolamentazioni specifiche.
+
+Il benchmark è regolarmente aggiornato dal CIS per rispecchiare l'evoluzione del cloud computing e delle minacce emergenti, con una comunità attiva che include esperti di sicurezza, provider cloud (inclusa AWS stessa) e organizzazioni del settore pubblico e privato. La versione 3, supportata da \textit{AWS Security Hub}, è attualmente una delle più diffuse per la valutazione della postura di sicurezza nel cloud AWS.
+
+Oltre al benchmark generale per AWS, il CIS fornisce anche benchmark specifici per servizi AWS come EC2, RDS, S3, EKS. Questi si specializzano su aspetti più vasti e dettagliati della sicurezza di ogni tipo di servizio, permettendo alle organizzazioni di applicare controlli di sicurezza specifici per le risorse AWS che utilizzano. 
+
+L'approccio strutturato e trasparente del CIS permette alle organizzazioni di adottare un framework solido per la gestione della sicurezza nel cloud, migliorando non solo la postura difensiva, ma anche l'aderenza a standard e normative riconosciuti a livello internazionale. 
+
+Nei capitoli successivi si esploreranno in dettaglio come implementare questi controlli di sicurezza in ambienti AWS, utilizzando strumenti che ne facilitano l'applicazione e la verifica.
+
+
+\section{National Institute of Standards and Technology}
+\label{sec:nist}
+
+Il \textit{National Institute of Standards and Technology} (NIST) è un'agenzia governativa degli Stati Uniti che si occupa dello sviluppo di standard, linee guida e best practice in diversi settori strategici tra cui le comunicazioni, la chimica, l'energetica e, in particolare, la sicurezza informatica. 
+
+Nel contesto della cybersecurity, il NIST fornisce un contributo fondamentale attraverso la definizione di modelli, controlli e raccomandazioni che coprono un ampio spettro di ambiti: dalla crittografia alla gestione del rischio, dalla sicurezza delle reti alla protezione dei dati sensibili e delle identità digitali.
+
+L'approccio adottato è basato su standard aperti e best practice consolidate, con l'obiettivo di supportare le organizzazioni pubbliche e private nel garantire l'affidabilità, la resilienza e la sicurezza dei propri sistemi informativi.
+
+Tra i principali contributi del NIST in ambito di sicurezza informatica si distinguono il \textbf{NIST Cybersecurity Framework (CSF)} e la serie delle \textbf{Special Publications (SP)}, in particolare la collana \textbf{SP 800}, che offre linee guida dettagliate per l'implementazione di controlli di sicurezza in diversi contesti organizzativi e tecnologici.
+
+In particolare la serie \textbf{Special Publication 800 (SP 800)} costituisce una raccolta tecnica molto ampia di documenti che approfondiscono vari aspetti della sicurezza informatica e della gestione del rischio. Le SP 800 sono destinate a organizzazioni federali ma adottate ampiamente anche dal settore privato. Ogni pubblicazione affronta un tema specifico e fornisce indicazioni operative, architetturali e normative.
+
+Tra i documenti più rilevanti della collana SP 800 si possono citare:
+
+\begin{itemize}
+    \item \textbf{SP 800-53}: fornisce un catalogo completo di controlli di sicurezza e privacy per i sistemi informativi, organizzati per famiglie (es. Access Control, Audit, Identification and Authentication).
+    \item \textbf{SP 800-171}: specifica requisiti di sicurezza per la protezione di informazioni controllate non classificate (\textit{Controlled Unclassified Information, CUI}) nei sistemi e nelle organizzazioni non federali.
+    \item \textbf{SP 800-30}: tratta la gestione del rischio attraverso metodologie per la valutazione dei rischi di sicurezza dei sistemi informatici.
+    \item \textbf{SP 800-61}: fornisce linee guida per la gestione degli incidenti di sicurezza informatica.
+    \item \textbf{SP 800-207}: introduce il modello di sicurezza \textit{Zero Trust Architecture}, in cui nessun attore è automaticamente considerato affidabile, nemmeno all'interno del perimetro aziendale.
+\end{itemize}
+
+\footnote{Contenuto tratto da \url{https://www.nist.gov/cyberframework} e \url{https://csrc.nist.gov/publications/sp800}.}
+
+Questi documenti, insieme al CSF, costituiscono un riferimento autorevole e sistematico per la progettazione, l'implementazione e la valutazione di misure di sicurezza nei moderni sistemi informatici, sia in ambito pubblico che privato.
+
+
+\subsection{SP 800-53 Rev. 5}
+\label{sec:nist_sp800_ac}
+
+Tra i documenti più rilevanti della serie SP 800, la \textbf{SP 800-53 Rev. 5} propone un framework dettagliato di controlli di sicurezza e privacy per i sistemi informativi, suddivisi in famiglie tematiche. Una delle famiglie centrali è quella relativa al \textbf{Controllo degli Accessi (Access Control, AC)}, che definisce misure per la gestione, la limitazione e l'enforcement degli accessi a dati e risorse.
+
+Questa famiglia è particolarmente importante nei contesti cloud e distribuiti, dove l'accesso alle risorse deve essere regolato con precisione attraverso politiche automatizzate, monitorate e basate sul principio del minimo privilegio.
+
+I principali controlli della famiglia \texttt{AC} includono:
+
+\begin{itemize}
+    \item \textbf{AC-2 - Account Management}: riguarda la gestione formale degli account utente, compresa la creazione, la modifica, la disattivazione e la revoca degli account. Promuove un controllo accurato sui soggetti che accedono al sistema.
+
+    \item \textbf{AC-3 - Access Enforcement}: definisce l'obbligo di applicare i meccanismi di controllo degli accessi definiti dalle politiche, in modo coerente e automatizzato, per limitare l'accesso solo a soggetti autorizzati.
+
+    \item \textbf{AC-5 - Separation of Duties}: prescrive la separazione dei compiti tra più soggetti per prevenire conflitti di interesse e ridurre i rischi legati all'abuso di privilegi.
+
+    \item \textbf{AC-6 - Least Privilege}: afferma che ciascun utente o processo deve disporre solo dei privilegi necessari per svolgere le proprie funzioni, evitando l'attribuzione indiscriminata di permessi elevati.
+\end{itemize}
+
+\footnote{Contenuto tratto da \url{https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final}.}
+
+Questi controlli rappresentano un fondamento per l'implementazione di politiche di sicurezza efficaci nei sistemi informativi moderni, in particolare in ambienti ad alta scalabilità e automazione. Il loro obiettivo è quello di garantire che l'accesso alle risorse sia sempre autorizzato, monitorato e proporzionato, in conformità ai principi di sicurezza “zero trust” e gestione del rischio.
+
+Essi saranno ripresi nei capitoli successivi per mostrare come possano essere implementati concretamente in ambienti reali, attraverso strumenti che garantiscano l'applicazione corretta per la compliance delle risorse AWS.
+

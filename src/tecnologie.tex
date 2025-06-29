@@ -1,0 +1,61 @@
+\chapter{Tecnologie utilizzate}
+\label{cap:tecnologie}
+
+Questo capitolo è dedicato alla descrizione delle tecnologie e degli strumenti utilizzati per lo sviluppo delle sonde di assurance. Si analizzano i linguaggi di programmazione, le librerie e i framework adottati, nonché le metodologie di sviluppo seguite.
+
+\section{Python}
+\label{sec:python}
+
+Python è un linguaggio di programmazione ad alto livello, interpretato e orientato agli oggetti. È ampiamente utilizzato per lo sviluppo di applicazioni web, automazione, analisi dei dati e machine learning. Durante lo sviluppo delle sonde, Python è stato scelto per la sua versatilità e compatibilità con molteplici librerie, tra cui quella per interfacciarsi con AWS.
+
+\subsection{Boto3}
+\label{sec:boto3}
+
+Boto3 è la libreria ufficiale di AWS per Python, che consente di interagire con i servizi AWS in modo semplice ed efficiente. Boto3 fornisce un'interfaccia intuitiva per accedere alle API di AWS e gestire le risorse cloud. Permette di creare un client per ciascun servizio AWS e di eseguire operazioni come la creazione, la modifica e l'eliminazione di risorse, nonostante per la verifica di conformità ai benchmark CIS siano sufficienti permessi di sola lettura. Per accedere a un servizio AWS, è necessario fornire le credenziali di accesso (\textit{Access Key} e \textit{Secret Key}) e la regione in cui si desidera operare. Un esempio di utilizzo di Boto3 è la creazione di un client per Amazon S3 ed elencare tutti i buckets presenti nella regione specificata sul determinato account.
+
+\begin{lstlisting}[style=mypython, caption={Esempio di utilizzo di Boto3 per elencare i bucket S3}]
+import boto3
+
+s3 = boto3.client (
+'s3',
+aws_access_key_id="YOUR_ACCESS_KEY",
+aws_secret_access_key="YOUR_SECRET_KEY",
+region_name="YOUR_REGION"
+)
+
+s3.list_buckets()
+\end{lstlisting}
+
+\section{MoonCloud}
+\label{sec:mooncloud}
+
+MoonCloud è una piattaforma per la valutazione di conformità e assurance di applicazioni o infrastrutture ICT che permette di avere una verifica completa dei servizi durante il loro ciclo di vita. Si concentra prevalentemente su security, AI e machine learning assurance.
+
+Le sonde di assurance sono sviluppate per essere eseguite su MoonCloud, che fornisce un \textbf{driver} che defisce struttura e funzionalità delle sonde. Si tratta di una macchina a stati finiti con due principali flow di esecuzione: \textbf{forward} e \textbf{rollback}. Il flow forward è il flusso principale di esecuzione della sonda, in cui vengono eseguiti i controlli di conformità e le azioni correttive. Il flow rollback viene eseguito in caso di errore o fallimento del flow forward, e consente di ripristinare lo stato precedente della sonda in caso il target sia stato modificato. La sonda prende in input dei parametri relativi al target di esecuzione e restituisce in output un risultato predefinito definito secondo un preciso schema arricchito poi dal programmatore.
+
+Il ciclo di vita di una sonda su MoonCloud inizia con la scrittura del codice sorgente: esso viene poi inserito in un repository Git che si occupa, tramite una pipeline CI/CD, di costruire l'immagine Docker della sonda e di renderla disponibile per l'esecuzione. MoonCloud dispone di un \textbf{backend} che gestisce l'interazione tra la sonda e la dashboard, ovvero l'interfaccia utente che consente di configurare, gestire, eseguire le sonde. In questo modo, è possibile creare un form tramite JSON schema per la configurazione di ciò che la sonda dovrebbe ricevere in input quando eseguita sulla dashboard. Si differenziano \textbf{Control} e \textbf{Abstract Evaluation Rule};
+il primo si occupa di definire:
+
+\begin{itemize}
+    \item \textbf{Nome} della sonda;
+    \item \textbf{Driver} della sonda, ovvero il link GitLab che identifica l'immagine Docker della sonda;
+    \item \textbf{Metadata}, ovvero il form che definisce i parametri di input della sonda secondo un JSON schema;
+    \item \textbf{Category} della sonda, in questo caso \textit{AWS};
+    \item \textbf{Supported Interval}, ovvero la frequenza con cui la sonda può essere eseguita;
+    \item \textbf{Cred Type}: diverse sonde possono richiedere credenziali di accesso differenti, dalla più semplice coppia \textit{username-password} a chiavi SSH o Git login;
+\end{itemize}
+
+In questo modo si definisce la sonda e le sue caratteristiche, per renderla disponibile per l'esecuzione. L'Abstract Evaluation Rule, invece, si occupa di presentare la sonda all'interno della dashboard, definendo:
+
+\begin{itemize}
+    \item \textbf{Nome} della sonda;
+    \item \textbf{Immagine} della sonda, ovvero il logo che appare nella dashboard;
+    \item \textbf{Descrizione}
+    \item \textbf{Category} della sonda, in questo caso \textit{Cloud};
+    \item \textbf{Formula}, ovvero il tag numerico progressivo del controllo prima definito, ad esempio \texttt{c\#89};
+    \item \textbf{Related Controls}, ovvero i controlli prima definiti che sono correlati a questa sonda;
+    \item \textbf{Owner} della sonda;
+    \item \textbf{isPublic}, ovvero se la sonda è pubblica o privata;
+\end{itemize}
+
+Una volta che la sonda è stata definita nel backend e l'immagine Docker è stata costruita, è possibile eseguirla sulla dashboard di MoonCloud. La dashboard consente di creare zone e target di esecuzione, ovvero le istanze o i servizi su cui si desidera eseguire delle sonde; definire credenziali di accesso per i target e da ultimo aggiungere ed eseguire \textbf{evaluations}, ovvero le sonde di assurance. I risultati sono mostrati sia tramite sommario con grafici e percentuali di conformità, sia tramite un log dettagliato che mostra l'esito di ogni singola sonda. 

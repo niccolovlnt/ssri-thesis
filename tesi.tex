@@ -1,0 +1,212 @@
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %                                                                             %
+    %           TEMPLATE LATEX PER TESI                                           %
+    %           ______________                                                    %
+    %                                                                             %
+    %           Ultima revisione: 11 Aprile 2025                                  %
+    %           Revisori: G.Presti; L.A.Ludovico; F. Avanzini; M. Tiraboschi      %
+    %                                                                             %
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Usare l'opzione twoside se volete stampare fronte-retro. Es.:
+    \documentclass[twoside,12pt]{report}
+    % Si consiglia di diminuire il font per tesi di dottorato in formato 17x24. Es:
+    % \documentclass[11pt]{report}
+    % \documentclass[12pt]{report}
+    
+    % --- PREAMBOLO ---------------------------------------------------------------
+    % Inserire qui eventuali package da includere o 
+    % definizioni di comandi personalizzati
+    
+    \usepackage[T1]{fontenc}
+    \usepackage[utf8]{inputenc}
+    \usepackage{lmodern}
+    \usepackage{mdframed}  
+    \usepackage{xcolor}   
+    \sloppy
+
+    
+    
+    % Selezione lingua
+    \usepackage[italian]{babel}
+    
+    
+    \usepackage{tesi}
+    % Puoi usare il font di default di LaTeX con la relativa opzione del package
+    % \usepackage[defaultfont]{tesi}
+    % Esiste anche un'opzione per il formato 17x24 per le tesi di dottorato
+    % \usepackage[phd]{tesi}
+    
+    % In caso il copia-incolla del PDF generato perda gli spazi,
+    % provare a decommentare la seguente riga
+    % \pdfinterwordspaceon
+    
+    % !!! INFORMAZIONI SULLA TESI DA COMPILARE !!!
+    
+    %   UNIVERSITA' E CORSO DI LAUREA:
+    \university{Università degli Studi di Milano}
+    \unilogo{immagini/loghi/unimi}
+    \faculty{Facoltà di Scienze e Tecnologie}
+    \department{Dipartimento di Informatica\\Giovanni Degli Antoni}
+    \cdl{Corso di Laurea Triennale in\\Sicurezza dei Sistemi e delle Reti Informatiche}
+    
+    %   TITOLO TESI:
+    \title{Verifiche di compliance in ambienti Cloud}
+    % Questo comando (opzionale) sovrascrive \title per quanto riguarda la copertina
+    % Può essere usato per stampare caratteri speciali, tenendo i metadati puliti
+    % \printedtitle{Verifiche di compliance in ambienti Cloud}
+    
+    %   AUTORE:
+    \author{Niccoló Volontè}
+    \matricola{20642A}
+    % "Elaborato Finale" per i CdL triennali
+    % "Tesi di Laurea" per i CdL magistrali
+    \typeofthesis{Elaborato Finale}
+    
+    %   RELATORE E CORRELATORE:
+    \relatore{Prof. Marco Anisetti}
+    \correlatore{Dott. Antongiacomo Polimeno}
+    
+    %   LABORATORIO:
+    % Questa sezione crea una pagina di chiusura della tesi con
+    % il logo dell'ente/laboratorio presso cui si è svolto il tirocinio.
+    % Più afferenze/url/loghi sono supportate,
+    % e la frase può essere personalizzata.
+    % Qui trovate alcuni predefiniti del nostro dipartimento
+    % \adaptlab
+    % \aislab
+    % \anacletolab
+    % \bisplab
+    % \connetslab
+    % \everywarelab
+    % \falselab
+    % \iebilab
+    % \islab
+    % \lailalab
+    % \lalalab
+    % \lawlab
+    % \laserlab
+    % \limlab
+    % \mipslab
+    % \optlab
+    % \phuselab
+    % \ponglab
+    \sesarlab
+    % \spdplab
+    
+    % Esempio di personalizzazione della pagina di chiusura
+    % (non consegnate con questo esempio!)
+    % (da commentare in caso sia sufficiente una delle macro precedenti)
+    % \lab{Laboratorio di Ricerca}
+    % \lab[in collaborazione con l']{Azienda Specifica}
+    % \laburl{https://di.unimi.it/it/ricerca/risorse-e-luoghi-della-ricerca/laboratori-di-ricerca}
+    % \lablogo{immagini/redqmark.pdf}
+    
+    % Con questo comando si può cambiare la dimensione (massima
+    % altezza e larghezza consentite) dei loghi
+    % \setlength\lablogosize{25mm}
+    
+    %   ANNO ACCADEMICO
+    % \the\year inserisce l'anno corrente
+    % per specificare manualmente un anno accademico
+    % NON inserire nel formato 1970-1971, ma
+    % inserire solo 1970
+    \academicyear{2024} 
+    
+    %   INDICI:
+    % elenco delle figure (facoltativo)
+    % \figurespagetrue
+    % elenco delle tabelle (facoltativo)
+    % \tablespagetrue
+    % prefazioni nell'indice (facoltativo)
+    \prefaceintoctrue
+    % indice nell'indice (facoltativo)
+    \tocintoctrue
+    % --- FINE PREAMBOLO ----------------------------------------------------------
+    
+    \begin{document}
+    
+    % Creazione automatica della copertina
+    % Centra la copertina nel foglio: usa questo comando per la copertina esterna
+    \makecenteredfrontpage
+    % Copertina allineata alle altre pagine: usa questo comando per la copertina interna
+    % \makefrontpage
+    
+    % 
+    %			PAGINA DI DEDICA E/O CITAZIONE
+    %			facoltativa, questa è l'unica cosa che dovete formattare a mano, un po' come vi pare
+    %
+    
+    % {\raggedleft \large \sl 
+    	
+    % 	``What I cannot create, I do not understand''
+    	
+    % 	\bigskip
+    	
+    % 	\--- Richard Feynman\\
+    
+    % \clearpage
+    % \beforepreface}
+    
+    % 
+    %			PREFAZIONE (facoltativa)
+    %
+    
+    % \prefacesection{Prefazione}
+    % Le prefazioni non sono molto comuni, tuttavia a volte capita che qualcuno voglia dire qualcosa che esuli dal lavoro in sé (come un meta-commento sull'elaborato), o voglia fornire informazioni riguardanti l'eventuale progetto entro cui la tesi si colloca (in questo caso è probabile che sia il relatore a scrivere questa parte).
+    
+    %
+    %			RINGRAZIAMENTI (facoltativi)
+    %
+    
+    \prefacesection{Ringraziamenti}
+    No
+    
+    %
+    %			Creazione automatica dell'indice
+    %
+    
+    \afterpreface
+    
+    % 
+    %			CAPITOLO 1: Introduzione o Abstract
+    % 
+    
+    \include{src/introduzione}
+    
+    \include{src/arte}
+
+    \include{src/tecnologie}
+    
+    \include{src/caso}
+    
+    \include{src/conclusioni}
+    
+    
+    \appendix
+    \chapter{aws\_sqs}
+    \label{app:sqs}
+    \lstinputlisting[style=mypython]{code/sqs.py}
+    
+    \chapter{aws\_inspector}
+    \label{app:inspector}
+    \lstinputlisting[style=mypython]{code/inspector.py}
+
+    \chapter{aws\_vulnerability}
+    \label{app:aws_vulnerability}
+    \lstinputlisting[style=mypython]{code/vuln.py}
+    
+    %
+    %			BIBLIOGRAFIA
+    %
+    
+    % Si può specificare a che livello della TOC deve essere la bibliografia.
+    % Il default è 'chapter', per 'part' usare
+    % \beforebibliography[part]
+    \beforebibliography
+    \bibliographystyle{unsrt}
+    \bibliography{bibliografia}
+    
+    % Pagina di chiusura
+    \closingpage
+    
+    \end{document}
