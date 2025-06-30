@@ -1,12 +1,12 @@
 \chapter{Caso di studio}
 \label{cap:caso_studio}
 
-Questo capitolo è dedicato alla descrizione del caso di studio scelto per lo sviluppo delle sonde di assurance. Si analizzano le modalità di codifica e implementazione delle sonde, nonchè le funzionalità offerte per ognuna di esse.
+Questo capitolo è dedicato alla descrizione del caso di studio scelto per lo sviluppo delle sonde di assurance. Si analizzano le modalità di codifica e implementazione delle 13 sonde secondo i 52 controlli del benchmark CIS AWS Foundations Benchmark v3, di NIST SP 800-53 e di CIS EKS Benchmark. Inoltre, si descrivono le funzionalità offerte da ciascuna sonda.
 
 \section{Descrizione}
 \label{sec:descrizione}
 
-Il processo di sviluppo delle sonde di assurance per AWS è stato suddiviso in diverse fasi, ognuna delle quali ha portato alla creazione, allo sviluppo e alle modifiche necessarie in corso d'opera. Il primo passo è stata la piena compresione della struttura del driver di MoonCloud, che consente di definire la struttura e le modalità di codifica di una sonda. Collegato a questo, è stata necessaria la comprensione del servizio Gitlab per la gestione del codice sorgente e delle versioni: in particolare, questo servizio consente di creare un repository per ogni sonda, in cui definendo file di configurazione e Dockerfile è possibile eseguire una pipeline CI/CD per il deploy della sonda ad ogni commit e conseguente push sul repository.
+Il processo di sviluppo delle sonde di assurance per AWS è stato suddiviso in diverse fasi, ognuna delle quali ha portato alla creazione, allo sviluppo e alle modifiche necessarie in corso d'opera. Il primo passo è stata la piena comprensione della struttura del driver di MoonCloud, che consente di definire la struttura e le modalità di codifica di una sonda. Collegato a questo, è stata necessaria la comprensione del servizio Gitlab per la gestione del codice sorgente e delle versioni: in particolare, questo servizio consente di creare un repository per ogni sonda, in cui definendo file di configurazione e Dockerfile è possibile eseguire una pipeline CI/CD per il deploy della sonda ad ogni commit e conseguente push sul repository.
 
 La struttura della sonda è composta da diversi file e cartelle, ognuna delle quali ha una funzione specifica:
 
@@ -26,10 +26,10 @@ aws_sonda/
 
 In particolare, la cartella \texttt{probe} contiene il file principale \texttt{probe.py}, che implementa la logica della sonda e gestisce le interazioni con i servizi AWS tramite Boto3. Il file \texttt{test.json} contiene un esempio di input per la sonda, mentre il file \texttt{schema.json} definisce lo schema del file \texttt{test.json} per validarne la correttezza. I file \texttt{*ignore} servono a escludere file e cartelle specifiche dalla repository Git e dalla build dell'immagine Docker, come virtual environment, file relativi all'IDE o file temporanei. Il file \texttt{requirements.txt} elenca le dipendenze Python necessarie per eseguire la sonda, mentre il file \texttt{Dockerfile} definisce come viene creata l'immagine Docker. Infine, il file \texttt{README.md} contiene informazioni generali sulla sonda, schema di input e output, form per la validazione su MoonCloud e azioni AWS necessarie per l'esecuzione della sonda.
 
+\vspace{2em}
+
 Il primo passo per comprendere i requisiti e gli obiettivi di una sonda è stato consultare la documentazione CIS AWS Foundations Benchmark v3. Una volta scelto il target della sonda, si sono analizzati uno ad uno i controlli dettati dal Benchmark. Dato che quest'ultimo è solamente descrittivo e non integra parti di codice, il passo seguente è stato consultare la documentazione API di Boto3 per lo specifico target, in modo da osservare le diverse funzioni disponibili, i parametri di ingresso e l'output restituito, in modo da capire dove risiedano le informazioni necessarie per controllare la conformità allo specifico controllo.
-
 Per le sonde AWS, è necessario prendere in ingresso le credenziali di accesso di un account AWS, che in fase di testing possono essere fornite tramite un file JSON \texttt{credential.json} che contiene le credenziali di accesso (Access Key e Secret Key) e la regione in cui si desidera operare. In fase di deploy su MoonCloud, le credenziali vengono fornite in automatico, quindi non è necessario e tantomeno raccomandato caricarle nel repository Git. Le credenziali di accesso sono necessarie per autenticarsi e autorizzare l'accesso alle risorse AWS, e devono essere fornite in modo sicuro per evitare compromissioni della sicurezza.
-
 Una volta ultimati tutti i controlli per il target d'interesse, si esegue la sonda in locale per verificare che essa abbia il comportamento aspettato e anche per scovare eventuali errori dati da parametri di input malformati, errori durante l'uso dell'API, credenziali errate: in ognuno di questi casi la sonda deve restituire errori specifici in modo da comprendere quali siano le azioni correttive da intraprendere. Ora la sonda è pronta per essere eseguita su MoonCloud.
 
 \section{Implementazione}
@@ -41,7 +41,7 @@ Dapprima è necessario scrivere tutti i file necessari alla pipeline CI/CD per c
 
 Particolare attenzione è l'inclusione di \texttt{credential.json} in \texttt{.gitignore}, in modo da evitare di caricare le credenziali di accesso al repository Git. 
 
-\paragraph{.gitlab-ci.yml} Questo file definisce la pipeline CI/CD per creare l'immagine Docker della sonda quando si effettua un push sul repository Git. La pipeline si concentra sul passare argomenti che si usano successivamente nel Dockerfile, come \texttt{GITLAB\_TOKEN\_USER} e \texttt{GITLAB\_TOKEN}. Questo file standard è fornito dallo sviluppatore del driver ed è necessario per il corretto funzionamento della ppipeline. Viene incluso in quanto parte integrante del processo di integrazione continua previsto dal progetto. Di seguito è riportato il contenuto del file \texttt{.gitlab-ci.yml}:
+\paragraph{.gitlab-ci.yml} Questo file definisce la pipeline CI/CD per creare l'immagine Docker della sonda quando si effettua un push sul repository Git. La pipeline si concentra sul passare argomenti che si usano successivamente nel Dockerfile, come \texttt{GITLAB\_TOKEN\_USER} e \texttt{GITLAB\_TOKEN}. Questo file standard è fornito dallo sviluppatore del driver ed è necessario per il corretto funzionamento della pipeline. Viene incluso in quanto parte integrante del processo di integrazione continua previsto dal progetto. Di seguito è riportato il contenuto del file \texttt{.gitlab-ci.yml}:
 
 \begin{lstlisting}[style=mygitlabci, caption={File \texttt{.gitlab-ci.yml} per la definizione della pipeline CI/CD}]
 stages:
@@ -64,7 +64,12 @@ artifacts:
     expire_in: 30 days
 \end{lstlisting}
 
-\paragraph{Dockerfile} Questo file definisce come viene creata l'immagine Docker di ogni sonda. L'immagine è basata su un'immagine Python 3.10 e installa le dipendenze necessarie per eseguire la sonda, prende come argmenti le variabili definite nel file \texttt{.gitlab-ci.yml}, scarica il driver di MoonCloud e copia i file necessari per l'esecuzione della sonda, per poi eseguire la sonda stessa. Anche in questo caso il file è standard e fornito dallo sviluppatore del driver, pertanto scelte di design e implementazione sono state fatte in fase di sviluppo del driver stesso. Di seguito è riportato il contenuto del file \texttt{Dockerfile}:
+Il file definisce una pipeline automatizzata che viene attivata ad ogni push sul repository. La struttura del file si articola in diverse sezioni principali.
+La sezione \textbf{stages} dichiara le fasi della pipeline, in questo caso una singola fase di build dedicata alla costruzione dell'immagine Docker. Il job \textbf{build\_probe} viene associato a questa fase in cui si associa un'immagine come ambiente di esecuzione.
+Le variabili d'ambiente vengono configurate attraverso la sezione \textbf{variables}, dove \texttt{CONTAINER\_RELEASE\_IMAGE} definisce il nome e il tag dell'immagine finale della sonda. La sezione \textbf{before\_script} esegue l'autenticazione al registry di GitLab utilizzando le credenziali del job corrente.
+La parte principale della pipeline risiede nella sezione \textbf{script}, che esegue in sequenza due operazioni: la costruzione dell'immagine Docker tramite passando i token di autenticazione come argomenti, e successivamente il push dell'immagine nel registry tramite. La configurazione \textbf{interruptible} con valore \texttt{true} permette l'interruzione del job se necessario, mentre la sezione \textbf{artifacts} definisce un periodo di conservazione di 30 giorni per eventuali artefatti prodotti durante l'esecuzione.
+
+\paragraph{Dockerfile} Questo file definisce come viene creata l'immagine Docker di ogni sonda. L'immagine è basata su un'immagine Python 3.10 e installa le dipendenze necessarie per eseguire la sonda, prende come argomenti le variabili definite nel file \texttt{.gitlab-ci.yml}, scarica il driver di MoonCloud e copia i file necessari per l'esecuzione della sonda, per poi eseguire la sonda stessa. Anche in questo caso il file è standard e fornito dallo sviluppatore del driver, pertanto scelte di design e implementazione sono state fatte in fase di sviluppo del driver stesso. Di seguito è riportato il contenuto del file \texttt{Dockerfile}:
 
 \begin{lstlisting}[style=mydockerfile, caption={\texttt{Dockerfile} per la creazione dell'immagine della sonda}]
 FROM python:3.10
@@ -91,6 +96,11 @@ RUN chmod +x /usr/src/app/probe/probe.py
 ENTRYPOINT [ "/bin/bash", "-c" ]
 CMD ["/usr/src/app/probe/probe.py"]
 \end{lstlisting}
+
+Il Dockerfile si struttura in diverse fasi che definiscono il processo di creazione dell'immagine. La fase iniziale stabilisce l'\textbf{ambiente} di base utilizzando l'immagine \texttt{python:3.10} e definisce gli argomenti \texttt{GITLAB\_TOKEN\_USER} e \texttt{GITLAB\_TOKEN} che vengono passati alla pipeline CI/CD per l'autenticazione.
+Creando la \textbf{directory} \texttt{/usr/src/app} per lo spazio di lavoro, si imposta come directory di lavoro. Il file \texttt{requirements.txt} viene copiato per primo nella directory per installare le dipendenze necessarie per la sonda.
+Successivamente si modifica il file \texttt{requirements.txt} tramite il comando \texttt{sed}, che sostituisce l'URL del repository Git inserendo le credenziali di \textbf{autenticazione}. Questa operazione permette di scaricare il driver di MoonCloud durante l'installazione delle dipendenze Python in quanto necessita di autenticazione. Si esegue il comando \texttt{pip install} per installare le \textbf{dipendenze} elencate nel file \texttt{requirements.txt}.
+La fase finale del build prevede la \textbf{copia} dei file necessari all'esecuzione: il file \texttt{schema.json} viene posizionato in \texttt{/etc/probe/schema.json} per la configurazione della sonda, mentre tutti i file sorgente vengono copiati nella directory di lavoro. Il file \texttt{probe.py} viene reso \textbf{eseguibile} e viene configurato come entry point del container attraverso le direttive \texttt{ENTRYPOINT} e \texttt{CMD}, garantendo che la sonda si avvii automaticamente all'esecuzione del container.
 
 \paragraph{requirements.txt} Questo file elenca le dipendenze Python necessarie per eseguire la sonda. Le uniche necessarie per le sonde AWS sono \texttt{boto3}, \texttt{requests} e il link al driver di MoonCloud. Di seguito è riportato il contenuto del file \texttt{requirements.txt}:
 
@@ -348,15 +358,15 @@ I tre controlli sono:
 
 Da queste descrizioni si è derivata la logica di ogni controllo, che è stata implementata nella sonda. Questa sonda è stata usata come prova per l'implementazione multiregione: ogni controllo itera tra gli $n$ client SQS, eseguendo le chiamate API necessarie e salvando i risultati in una struttura annidata suddivisa per regione.
 
-Il controllo \textbf{SQS.1} verifica se le code SQS sono crittografate quando sono inattive. In un ciclo che itera tra le regioni specificate, la sonda esegue una chiamata API a \texttt{list\_queues}, inserisce le code in una lista e per ognuna di esse controlla se il parametro \texttt{SqsManagedSseEnabled} è \texttt{True}. Se non lo è, la coda viene aggiunta alla lista \texttt{unencrypted\_queues}, \texttt{encrypted\_queues} altrimenti. Il controllo viene marcato come passato se tutte le code in tutte le regioni sono crittografate, altrimenti fallisce.
+Il controllo \textbf{SQS.1} verifica se le code SQS siano crittografate quando sono inattive. In un ciclo che itera tra le regioni specificate, la sonda esegue una chiamata API a \texttt{list\_queues}, inserisce le code in una lista e per ognuna di esse controlla se il parametro \texttt{SqsManagedSseEnabled} è \texttt{True}. Se non lo è, la coda viene aggiunta alla lista \texttt{unencrypted\_queues}, \texttt{encrypted\_queues} altrimenti. Il controllo viene marcato come passato se tutte le code in tutte le regioni sono crittografate, altrimenti fallisce.
 
 Il controllo \textbf{SQS.2} richiede un parametro di input, \texttt{requiredTagKeys}, che è un array di stringhe contenente le chiavi dei tag richiesti. Per questo motivo in maniera analoga a quanto fatto per le regioni, la stringa in input alla sonda viene convertita in un array di stringhe. La sonda esegue una chiamata a \texttt{list\_queues} e per ognuna di esse esegue una chiamata a \texttt{list\_queue\_tags}. Se la coda non ha tag, viene aggiunta alla lista \texttt{untagged\_queues}, altrimenti si controlla se contiene i tag richiesti. Se non li contiene, viene aggiunta alla lista \texttt{missing\_tags}. Il controllo viene marcato come passato se tutte le code in tutte le regioni hanno i tag richiesti, oppure, se non ci sono tag specificati nel parametro in ingresso, se tutte le code hanno almeno un tag.
 
 Il controllo \textbf{SQS.3} verifica se le politiche di accesso delle code SQS non consentono l'accesso pubblico. La sonda esegue una chiamata API a \texttt{list\_queues} e per ognuna di esse esegue una chiamata a \texttt{get\_queue\_attributes} per ottenere gli attributi della coda. Se l'attributo \texttt{Policy} esiste, si itera per \texttt{statement} e si controlla se tra quelli con valore \texttt{Effect: Allow}, ne esista uno con \texttt{Principal: \{*}\} oppure \texttt{Principal: \{'AWS'\}}. Il controllo viene marcato come passato se tutte le code in tutte le regioni non hanno politiche di accesso pubbliche.
 
-La gestione della funzione \texttt{execute\_all\_controls} è identica a quella descritta nella sezione \ref{sec:implementazione}, e la funzione \texttt{atoms} crea una catena di \textbf{forward} di 5 atomi: \texttt{init}, \texttt{sqs\_check\_1}, \texttt{sqs\_check\_2}, \texttt{sqs\_check\_3} e \texttt{execute\_all\_controls}. Anche la gestione delle eccezioni è identica a quella di default. 
+La gestione della funzione \texttt{execute\_all\_controls} è identica a quella descritta nella sezione \ref{sec:implementazione}, e la funzione \texttt{atoms} crea una catena di \textbf{forward} di 5 atomi: \texttt{init}, \texttt{sqs\_check\_1}, \texttt{sqs\_check\_2}, \texttt{sqs\_check\_3} e \texttt{execute\_all\_controls}. Anche la gestione delle eccezioni è identica a quella di default.
 
-Le azioni AWS necessarie per eseguire la sonda sono:
+Le \textbf{azioni AWS} necessarie per eseguire la sonda sono:
 
 \begin{itemize}
     \item \texttt{sqs:ListQueues}
@@ -428,7 +438,7 @@ Non sono riportati i dettagli di ogni controllo secondo Security Hub in quanto s
 
 Nella funzione \texttt{init} viene istanziato il client \texttt{inspector2} tramite Boto3 e viene eseguita una chiamata a \texttt{list\_members} per verificare che le credenziali siano valide. La sonda salva i risultati dei controlli in \texttt{self.control\_results} e i dati raccolti in \texttt{self.collected\_data}, come descritto nella sezione \ref{sec:implementazione}. 
 
-Il controllo \textbf{Inspector.1} verifica che Amazon Inspector sia ablitato per scansionare le risorse EC2. La sonda esegue una chiamata a \texttt{batch\_get\_account\_status} per ottenere lo stato dell'account e verifica che \texttt{resourceState} sia \texttt{ENABLED} per l'account amministratore. Successivamente procede a verificare che tutti i membri dell'account abbiano lo stato \texttt{ENABLED} per le risorse EC2: la chiamata \texttt{list\_members} crea un lista di membri e se vuota marca il controllo come passato se sia abilitato per l'account amministratore; se invece esiste almeno un membro, la sonda verifica che essi siano \texttt{ENABLED} o \texttt{SUSPENDED} per le risorse EC2. Se tutti i membri hanno lo stato \texttt{ENABLED}, il controllo viene marcato come passato, altrimenti fallisce.
+Il controllo \textbf{Inspector.1} verifica che Amazon Inspector sia abilitato per scansionare le risorse EC2. La sonda esegue una chiamata a \texttt{batch\_get\_account\_status} per ottenere lo stato dell'account e verifica che \texttt{resourceState} sia \texttt{ENABLED} per l'account amministratore. Successivamente procede a verificare che tutti i membri dell'account abbiano lo stato \texttt{ENABLED} per le risorse EC2: la chiamata \texttt{list\_members} crea un lista di membri e se vuota marca il controllo come passato se sia abilitato per l'account amministratore; se invece esiste almeno un membro, la sonda verifica che essi siano \texttt{ENABLED} o \texttt{SUSPENDED} per le risorse EC2. Se tutti i membri hanno lo stato \texttt{ENABLED}, il controllo viene marcato come passato, altrimenti fallisce.
 
 I controlli \textbf{Inspector.2}, \textbf{Inspector.3}, \textbf{Inspector.4} sono implementati con la stessa logica, differenziandosi solo per il tipo di risorsa sottoposta a verifica.
 
@@ -509,7 +519,7 @@ La sonda \texttt{aws\_iam} è dedicata al servizio AWS Identity and Access Manag
     \item IAM.27 -  IAM identities should not have the \texttt{AWSCloudShellFullAccess} policy attached.
     \begin{itemize}
         \item This control checks whether an IAM identity (user, role, or group) has the AWS managed policy \texttt{AWSCloudShellFullAccess} attached. The control fails if an IAM identity has the \texttt{AWSCloudShellFullAccess} policy attached.
-        \item The AWS managed policy AWSCloudShellFullAccess provides full access to CloudShell, which allows file upload and download capability between a user's local system and the CloudShell environment. Within the CloudShell environment, a user has sudo permissions, and can access the internet. As a result, atttaching this managed policy to an IAM identity gives them the ability to install file transfer software and move data from CloudShell to external internet servers. We recommend following the principle of least privilege and attaching narrower permissions to your IAM identities.
+        \item The AWS managed policy AWSCloudShellFullAccess provides full access to CloudShell, which allows file upload and download capability between a user's local system and the CloudShell environment. Within the CloudShell environment, a user has sudo permissions, and can access the internet. As a result, attaching this managed policy to an IAM identity gives them the ability to install file transfer software and move data from CloudShell to external internet servers. We recommend following the principle of least privilege and attaching narrower permissions to your IAM identities.
     \end{itemize}
     \item IAM.28 - IAM Access Analyzer external access analyzer should be enabled.
     \begin{itemize}
