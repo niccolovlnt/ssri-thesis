@@ -3,6 +3,18 @@
 
 Questo capitolo è dedicato ad una panoramica dei servizi AWS e delle best practices di sicurezza associate. Si analizza anche il significato di assurance nel contesto del cloud computing; in aggiunta un focus sul Center for Internet Security (CIS) e sul suo benchmark per AWS.
 
+\section{Assurance e compliance}
+\label{sec:assurance}
+
+Nel cloud computing è sempre più importante garantire che le infrastrutture e le applicazioni si comportino in modo corretto, anche in presenza di guasti o attacchi. Questo concetto si chiama \textbf{assurance} e si riferisce alla capacità di fornire garanzie concrete sul fatto che i sistemi mostrino proprietà di sicurezza in modo continuo. L'assurance non si limita alla sicurezza come concetto teorico, ma include anche metodi per raccogliere e validare prove che dimostrino che le misure di sicurezza funzionano davvero.
+
+Il cloud è un ambiente che cambia spesso: i servizi vengono aggiornati, macchine virtuali si spostano, configurazioni si modificano. Tutto questo rende instabile la base su cui si costruisce la sicurezza. Per questo motivo, l'assurance deve essere continua e adattabile. Non basta più verificare la sicurezza una sola volta, ma serve farlo in modo costante, monitorando il comportamento dei sistemi nel tempo.
+
+Per migliorare la fiducia degli utenti, l'assurance deve essere supportata dalla \textbf{trasparenza}: gli utenti devono poter accedere a dati e prove che dimostrino come il loro servizio sia sicuro. Questo si ottiene tramite tecniche come il monitoraggio, il testing e la certificazione, che sono pensate per aumentare la visibilità e il controllo, sia da parte del provider che del cliente. \cite{ardagna2015security}.
+
+Infine, l'assurance è anche la base per la \textit{compliance}, cioè la conformità a normative, leggi e regolamenti. La compliance implica l'applicazione concreta delle regole definite dalle regolamentazioni, che spesso mirano a garantire attributi come la riservatezza, l'integrità, la disponibilità e la responsabilità dei dati. A causa della natura stessa del cloud, la compliance è una responsabilità condivisa tra provider, clienti e auditor. Tuttavia, molte regolamentazioni sono lunghe, ridondanti e difficili da interpretare, rendendo complicata la loro applicazione nei sistemi cloud. Inoltre, la mancanza di architetture di riferimento standard rende difficile per le aziende valutare il livello reale di conformità dei provider. Per questo motivo, è importante che essa venga considerata già a livello architetturale, così da facilitare la valutazione e la selezione di servizi cloud conformi da parte dei clienti \cite{yimam2016survey}.
+
+
 \section{Amazon Web Services}
 \label{sec:aws}
 
@@ -118,7 +130,7 @@ Questi documenti, insieme al CSF, costituiscono un riferimento per la progettazi
 \subsection{SP 800-53 Rev. 5}
 \label{sec:nist_sp800_ac}
 
-Tra i documenti più rilevanti della serie SP 800, la \textbf{SP 800-53 Rev. 5} propone un framework dettagliato di controlli di sicurezza e privacy per i sistemi informativi, suddivisi in famiglie tematiche. Una delle famiglie centrali è quella relativa al \textbf{Controllo degli Accessi (Access Control, AC)}, che definisce misure per la gestione, la limitazione e l'enforcement degli accessi a dati e risorse.
+Tra i documenti più rilevanti della serie SP 800, la \textbf{SP 800-53 Rev. 5} propone un framework dettagliato di controlli di sicurezza e privacy per i sistemi informativi, suddivisi in famiglie tematiche. Una delle famiglie centrali è quella relativa al \textbf{Controllo degli Accessi (Access Control, AC)}, che definisce misure per la gestione, la limitazione e l'enforcement degli accessi a dati e risorse \cite{tariq2017risk}.
 
 Questa famiglia è particolarmente importante nei contesti cloud e distribuiti, dove l'accesso alle risorse deve essere regolato con precisione attraverso politiche automatizzate, monitorate e basate sul principio del minimo privilegio.
 

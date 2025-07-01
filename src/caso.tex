@@ -1,14 +1,22 @@
 \chapter{Caso di studio}
 \label{cap:caso_studio}
 
-Questo capitolo è dedicato alla descrizione del caso di studio scelto per lo sviluppo delle sonde di assurance. Si analizzano le modalità di codifica e implementazione delle 13 sonde secondo i 52 controlli del benchmark CIS AWS Foundations Benchmark v3, di NIST SP 800-53 e di CIS EKS Benchmark. Inoltre, si descrivono le funzionalità offerte da ciascuna sonda.
+Questo capitolo è dedicato alla descrizione del caso di studio scelto per lo sviluppo delle sonde di assurance. Si analizzano le modalità di codifica e implementazione delle 13 sonde secondo i 51 controlli del benchmark CIS AWS Foundations Benchmark v3, di NIST SP 800-53 e di CIS EKS Benchmark. Inoltre, si descrivono le funzionalità offerte da ciascuna sonda.
 
 \section{Descrizione}
-\label{sec:descrizione}
 
-Il processo di sviluppo delle sonde di assurance per AWS è stato suddiviso in diverse fasi, ognuna delle quali ha portato alla creazione, allo sviluppo e alle modifiche necessarie in corso d'opera. Il primo passo è stata la piena comprensione della struttura del driver di MoonCloud, che consente di definire la struttura e le modalità di codifica di una sonda. Collegato a questo, è stata necessaria la comprensione del servizio Gitlab per la gestione del codice sorgente e delle versioni: in particolare, questo servizio consente di creare un repository per ogni sonda, in cui definendo file di configurazione e Dockerfile è possibile eseguire una pipeline CI/CD per il deploy della sonda ad ogni commit e conseguente push sul repository.
+Lo sviluppo delle sonde di assurance per AWS è stato organizzato in più fasi, ognuna con uno scopo preciso. L'obiettivo principale era quello di creare sonde in grado di verificare automaticamente se risorse e servizi AWS rispettando i 51 controlli di sicurezza definiti nei benchmark in questione. 
 
-La struttura della sonda è composta da diversi file e cartelle, ognuna delle quali ha una funzione specifica:
+Le sonde sono state progettate per essere eseguite all'interno di \textit{MoonCloud}, un framework che si occupa di gestire l'intero ciclo di vita delle sonde: dalla configurazione all'esecuzione, fino alla visualizzazione dei risultati.
+
+\paragraph{Analisi e progettazione} Per ogni sonda è stato necessario prima di tutto comprendere i controlli di sicurezza descritti nei benchmark. Essendo documenti di tipo descrittivo, è stato fondamentale tradurre ogni controllo in logica eseguibile, individuando:
+\begin{itemize}
+    \item il servizio AWS coinvolto (ad esempio IAM, EC2, S3, ecc.),
+    \item il tipo di verifica da effettuare (ad esempio presenza di MFA, assenza di accesso pubblico, rotazione delle chiavi),
+    \item le API di AWS necessarie, tramite la libreria \texttt{boto3} in Python.
+\end{itemize}
+
+Una volta chiarita la logica, si è passati alla progettazione vera e propria della sonda. Ogni sonda ha una struttura comune: il file \texttt{probe.py} contiene la logica di esecuzione, mentre file come \texttt{schema.json} e \texttt{test.json} servono per la gestione dell'input. La sonda viene poi containerizzata tramite Docker e integrata con MoonCloud.
 
 \begin{lstlisting}[caption={Struttura di ogni sonda per MoonCloud}]
 aws_sonda/
@@ -24,13 +32,24 @@ aws_sonda/
 |-- README.md
 \end{lstlisting}
 
-In particolare, la cartella \texttt{probe} contiene il file principale \texttt{probe.py}, che implementa la logica della sonda e gestisce le interazioni con i servizi AWS tramite Boto3. Il file \texttt{test.json} contiene un esempio di input per la sonda, mentre il file \texttt{schema.json} definisce lo schema del file \texttt{test.json} per validarne la correttezza. I file \texttt{*ignore} servono a escludere file e cartelle specifiche dalla repository Git e dalla build dell'immagine Docker, come virtual environment, file relativi all'IDE o file temporanei. Il file \texttt{requirements.txt} elenca le dipendenze Python necessarie per eseguire la sonda, mentre il file \texttt{Dockerfile} definisce come viene creata l'immagine Docker. Infine, il file \texttt{README.md} contiene informazioni generali sulla sonda, schema di input e output, form per la validazione su MoonCloud e azioni AWS necessarie per l'esecuzione della sonda.
+\paragraph{Testing e verifica} Durante la fase di sviluppo, le sonde sono state testate in locale usando delle credenziali AWS di test, salvate in un file \texttt{credential.json} (escluso dal repository tramite \texttt{.gitignore}).
 
-\vspace{2em}
+L'obiettivo dei test era verificare che:
+\begin{itemize}
+    \item i controlli restituissero i risultati attesi,
+    \item le eventuali eccezioni venissero gestite in modo chiaro,
+    \item la struttura dell'output fosse compatibile con quella richiesta da MoonCloud.
+\end{itemize}
 
-Il primo passo per comprendere i requisiti e gli obiettivi di una sonda è stato consultare la documentazione CIS AWS Foundations Benchmark v3. Una volta scelto il target della sonda, si sono analizzati uno ad uno i controlli dettati dal Benchmark. Dato che quest'ultimo è solamente descrittivo e non integra parti di codice, il passo seguente è stato consultare la documentazione API di Boto3 per lo specifico target, in modo da osservare le diverse funzioni disponibili, i parametri di ingresso e l'output restituito, in modo da capire dove risiedano le informazioni necessarie per controllare la conformità allo specifico controllo.
-Per le sonde AWS, è necessario prendere in ingresso le credenziali di accesso di un account AWS, che in fase di testing possono essere fornite tramite un file JSON \texttt{credential.json} che contiene le credenziali di accesso (Access Key e Secret Key) e la regione in cui si desidera operare. In fase di deploy su MoonCloud, le credenziali vengono fornite in automatico, quindi non è necessario e tantomeno raccomandato caricarle nel repository Git. Le credenziali di accesso sono necessarie per autenticarsi e autorizzare l'accesso alle risorse AWS, e devono essere fornite in modo sicuro per evitare compromissioni della sicurezza.
-Una volta ultimati tutti i controlli per il target d'interesse, si esegue la sonda in locale per verificare che essa abbia il comportamento aspettato e anche per scovare eventuali errori dati da parametri di input malformati, errori durante l'uso dell'API, credenziali errate: in ognuno di questi casi la sonda deve restituire errori specifici in modo da comprendere quali siano le azioni correttive da intraprendere. Ora la sonda è pronta per essere eseguita su MoonCloud.
+\paragraph{Integrazione su MoonCloud} Una volta completata e testata, ogni sonda viene integrata nel framework MoonCloud. Il codice sorgente viene salvato su GitLab, e una pipeline CI/CD si occupa di creare automaticamente l'immagine Docker della sonda.
+
+MoonCloud permette poi di configurare ed eseguire la sonda tramite una dashboard web. Per ogni sonda vengono definite:
+\begin{itemize}
+    \item un \textit{Control}, che specifica il driver, i metadati di input, il tipo di credenziali richieste e altre informazioni tecniche;
+    \item una \textit{Abstract Evaluation Rule}, che definisce il nome, la descrizione, l'immagine visibile in dashboard, e i controlli a cui la sonda è collegata.
+\end{itemize}
+
+In questo modo è possibile selezionare facilmente la sonda dalla dashboard, eseguirla su un account AWS target e visualizzare i risultati in forma aggregata oppure dettagliata.
 
 \section{Implementazione}
 \label{sec:implementazione}
@@ -41,7 +60,7 @@ Dapprima è necessario scrivere tutti i file necessari alla pipeline CI/CD per c
 
 Particolare attenzione è l'inclusione di \texttt{credential.json} in \texttt{.gitignore}, in modo da evitare di caricare le credenziali di accesso al repository Git. 
 
-\paragraph{.gitlab-ci.yml} Questo file definisce la pipeline CI/CD per creare l'immagine Docker della sonda quando si effettua un push sul repository Git. La pipeline si concentra sul passare argomenti che si usano successivamente nel Dockerfile, come \texttt{GITLAB\_TOKEN\_USER} e \texttt{GITLAB\_TOKEN}. Questo file standard è fornito dallo sviluppatore del driver ed è necessario per il corretto funzionamento della pipeline. Viene incluso in quanto parte integrante del processo di integrazione continua previsto dal progetto. Di seguito è riportato il contenuto del file \texttt{.gitlab-ci.yml}:
+\paragraph{.gitlab-ci.yml} Questo file definisce la pipeline CI/CD per creare l'immagine Docker della sonda quando si effettua un push sul repository Git. Questo file standard è fornito dallo sviluppatore del driver ed è necessario per il corretto funzionamento della pipeline. Viene incluso in quanto parte integrante del processo di integrazione continua previsto dal progetto. Di seguito è riportato il contenuto del file \texttt{.gitlab-ci.yml}:
 
 \begin{lstlisting}[style=mygitlabci, caption={File \texttt{.gitlab-ci.yml} per la definizione della pipeline CI/CD}]
 stages:
@@ -69,7 +88,7 @@ La sezione \textbf{stages} dichiara le fasi della pipeline, in questo caso una s
 Le variabili d'ambiente vengono configurate attraverso la sezione \textbf{variables}, dove \texttt{CONTAINER\_RELEASE\_IMAGE} definisce il nome e il tag dell'immagine finale della sonda. La sezione \textbf{before\_script} esegue l'autenticazione al registry di GitLab utilizzando le credenziali del job corrente.
 La parte principale della pipeline risiede nella sezione \textbf{script}, che esegue in sequenza due operazioni: la costruzione dell'immagine Docker tramite passando i token di autenticazione come argomenti, e successivamente il push dell'immagine nel registry tramite. La configurazione \textbf{interruptible} con valore \texttt{true} permette l'interruzione del job se necessario, mentre la sezione \textbf{artifacts} definisce un periodo di conservazione di 30 giorni per eventuali artefatti prodotti durante l'esecuzione.
 
-\paragraph{Dockerfile} Questo file definisce come viene creata l'immagine Docker di ogni sonda. L'immagine è basata su un'immagine Python 3.10 e installa le dipendenze necessarie per eseguire la sonda, prende come argomenti le variabili definite nel file \texttt{.gitlab-ci.yml}, scarica il driver di MoonCloud e copia i file necessari per l'esecuzione della sonda, per poi eseguire la sonda stessa. Anche in questo caso il file è standard e fornito dallo sviluppatore del driver, pertanto scelte di design e implementazione sono state fatte in fase di sviluppo del driver stesso. Di seguito è riportato il contenuto del file \texttt{Dockerfile}:
+\paragraph{Dockerfile} Questo file definisce come viene creata l'immagine Docker di ogni sonda. Anche in questo caso il file è standard e fornito dallo sviluppatore del driver, pertanto scelte di design e implementazione sono state fatte in fase di sviluppo del driver stesso. Di seguito è riportato il contenuto del file \texttt{Dockerfile}:
 
 \begin{lstlisting}[style=mydockerfile, caption={\texttt{Dockerfile} per la creazione dell'immagine della sonda}]
 FROM python:3.10
@@ -128,12 +147,12 @@ index.html) to interact with AWS ...
 
 ```json5
 {
-"config": {
-    "aws_access_key_id": "your_access_key",
-    "aws_secret_access_key": "your_secret_key",
-    "region": "your_region",
-    ...
-}
+    "config": {
+        "aws_access_key_id": "your_access_key",
+        "aws_secret_access_key": "your_secret_key",
+        "region": "your_region",
+        ...
+    }
 }
 ```
 
@@ -192,11 +211,11 @@ index.html) to interact with AWS ...
 
 \begin{lstlisting}[style=myjson]
 {
-"config": {
-    "aws_access_key_id": "your_access_key",
-    "aws_secret_access_key": "your_secret_key",
-    "region": "your_region"
-}
+    "config": {
+        "aws_access_key_id": "your_access_key",
+        "aws_secret_access_key": "your_secret_key",
+        "region": "your_region"
+    }
 }
 \end{lstlisting}
 
@@ -444,7 +463,7 @@ I controlli \textbf{Inspector.2}, \textbf{Inspector.3}, \textbf{Inspector.4} son
 
 La gestione della funzione \texttt{execute\_all\_controls} è identica a quella descritta nella sezione \ref{sec:implementazione}: la funzione \texttt{atoms} crea una catena di \textbf{forward} di 5 atomi: \texttt{init}, \texttt{inspector\_check\_1}, \texttt{...}, \texttt{inspector\_check\_4}, e \texttt{execute\_all\_controls}. Anche la gestione delle eccezioni è identica a quella di default. 
 
-Le azioni AWS necessarie per eseguire la sonda sono:
+Le \textbf{azioni AWS} necessarie per eseguire la sonda sono:
 
 \begin{itemize}
     \item \texttt{inspector2:ListMembers}
@@ -562,7 +581,7 @@ Il controllo \textbf{IAM.28} verifica che l'accesso esterno di Access Analyzer I
 
 La gestione della funzione \texttt{execute\_all\_controls} è identica a quella descritta nella sezione \ref{sec:implementazione}: la funzione \texttt{atoms} crea una catena di \textbf{forward} di 15 atomi: \texttt{init}, \texttt{iam\_check\_2}, \dots, \texttt{iam\_check\_28}, e \texttt{execute\_all\_controls}. Anche la gestione delle eccezioni è identica a quella di default.
 
-Le azioni AWS necessarie per eseguire la sonda sono:
+Le \textbf{azioni AWS} necessarie per eseguire la sonda sono:
 \begin{itemize}
     \item \texttt{iam:ListUsers}
     \item \texttt{iam:ListUserPolicies}
@@ -642,7 +661,7 @@ Il controllo \textbf{EC2.54} verifica che i gruppi di sicurezza EC2 non consenta
 
 La gestione della funzione \texttt{execute\_all\_controls} è identica a quella descritta nella sezione \ref{sec:implementazione}: la funzione \texttt{atoms} crea una catena di \textbf{forward} di 8 atomi: \texttt{init}, \texttt{ec2\_check\_2}, \dots, \texttt{ec2\_check\_54}, e \texttt{execute\_all\_controls}. Anche la gestione delle eccezioni è identica a quella di default.
 
-Le azioni AWS necessarie per eseguire la sonda sono:
+Le \textbf{azioni AWS} necessarie per eseguire la sonda sono:
 
 \begin{itemize}
     \item \texttt{ec2:DescribeRegions}
@@ -726,7 +745,8 @@ Il controllo \textbf{S3.22} verifica che i bucket S3 general purpose abbiano abi
 Il controllo \textbf{S3.23} verifica che i bucket S3 general purpose abbiano abilitato il logging degli eventi di lettura a livello di oggetto. La logica di controllo è identica a quella del controllo \textbf{S3.22}, ma si controlla se esiste almeno un evento di \texttt{ReadWriteType} uguale a \texttt{ReadOnly} o \texttt{All}. 
 
 La gestione della funzione \texttt{execute\_all\_controls} è identica a quella descritta nella sezione \ref{sec:implementazione}: la funzione \texttt{atoms} crea una catena di \textbf{forward} di 8 atomi: \texttt{init}, \texttt{s3\_check\_1}, \dots, \texttt{s3\_check\_23}, e \texttt{execute\_all\_controls}. Anche la gestione delle eccezioni è identica a quella di default.
-Le azioni AWS necessarie per eseguire la sonda sono:
+
+Le \textbf{azioni AWS} necessarie per eseguire la sonda sono:
 \begin{itemize}
     \item \texttt{s3:ListBuckets}
     \item \texttt{sts:GetCallerIdentity}
@@ -861,7 +881,8 @@ Da questa descrizione si è derivata la logica di controllo, che è stata implem
 
 Il controllo \textbf{Account.1} verifica che le informazioni di contatto di sicurezza siano fornite per l'account AWS. La funzione, in un blocco \texttt{try-except}, esegue una chiamata a \texttt{get\_alternate\_contact} passando come parametro il tipo di contatto (\texttt{AlternateContactType}) impostato a \texttt{SECURITY}. Se la chiamata ha successo, si controlla se i campi \texttt{Name}, \texttt{EmailAddress} e \texttt{PhoneNumber} sono valorizzati. Se tutti e tre i campi sono valorizzati, il controllo viene marcato come passato, altrimenti fallisce. Se la chiamata fallisce con l'eccezione \texttt{ResourceNotFoundException}, il controllo viene marcato come fallito.
 La funzione \texttt{execute\_all\_controls} è identica a quella descritta nella sezione \ref{sec:implementazione}. Si una catena di \textbf{forward} di 3 atomi: \texttt{init} e \texttt{account\_check\_1}, e \texttt{execute\_all\_controls}. Anche la gestione delle eccezioni è identica a quella di default.
-Le azioni AWS necessarie per eseguire la sonda sono:
+
+Le \textbf{azioni AWS} necessarie per eseguire la sonda sono:
 \begin{itemize}
     \item \texttt{account:GetAlternateContact}
     \item \texttt{account:ListRegions}
@@ -916,7 +937,8 @@ La logica per la registrazione delle risorse globali tiene conto di questa confi
 La funzione costruisce un messaggio di output che elenca specificamente quali condizioni non sono state soddisfatte. Altrimenti il controllo viene marcato come passato. 
 
 La funzione \texttt{execute\_all\_controls} è identica a quella descritta nella sezione \ref{sec:implementazione}. Si crea una catena di \textbf{forward} di 3 atomi: \texttt{init} e \texttt{config\_check\_1} e \texttt{execute\_all\_controls}. Anche la gestione delle eccezioni è identica a quella di default.
-Le azioni AWS necessarie per eseguire la sonda sono:
+
+Le \textbf{azioni AWS} necessarie per eseguire la sonda sono:
 \begin{itemize}
     \item \texttt{config:DescribeConfigurationRecorders}
     \item \texttt{config:DescribeConfigurationRecorderStatus}
@@ -982,7 +1004,7 @@ Il controllo \textbf{CloudTrail.7} verifica che il logging degli accessi al buck
 
 La funzione \texttt{execute\_all\_controls} è identica a quella descritta nella sezione \ref{sec:implementazione}. Si crea una catena di \textbf{forward} di 6 atomi: \texttt{init}, \texttt{cloudtrail\_check\_1}, \texttt{cloudtrail\_check\_2}, \texttt{cloudtrail\_check\_4}, \texttt{cloudtrail\_check\_7} e \texttt{execute\_all\_controls}. Anche la gestione delle eccezioni è identica a quella di default.
 
-Le azioni AWS necessarie per eseguire la sonda sono:
+Le \textbf{azioni AWS} necessarie per eseguire la sonda sono:
 \begin{itemize}
     \item \texttt{cloudtrail:DescribeTrails}
     \item \texttt{cloudtrail:GetEventSelectors}
@@ -1014,7 +1036,7 @@ Il controllo \textbf{EFS.1} verifica che Amazon EFS sia configurato per cifrare 
 
 La funzione \texttt{execute\_all\_controls} è identica a quella descritta nella sezione \ref{sec:implementazione}. Si crea una catena di \textbf{forward} di 3 atomi: \texttt{init}, \texttt{efs\_check\_1} e \texttt{execute\_all\_controls}. Anche la gestione delle eccezioni è identica a quella di default.
 
-L'azione AWS necessaria per eseguire la sonda è:
+L'\textbf{azione AWS} necessaria per eseguire la sonda è:
 \begin{itemize}
     \item \texttt{efs:DescribeFileSystems}
 \end{itemize}
@@ -1040,7 +1062,7 @@ Il controllo \textbf{KMS.4} verifica che AWS KMS abbia abilitata la rotazione de
 
 La funzione \texttt{execute\_all\_controls} è identica a quella descritta nella sezione \ref{sec:implementazione}. Si crea una catena di \textbf{forward} di 3 atomi: \texttt{init}, \texttt{kms\_check\_4} e \texttt{execute\_all\_controls}. Anche la gestione delle eccezioni è identica a quella di default.
 
-Le azioni AWS necessarie per eseguire la sonda sono:
+Le \textbf{azioni AWS} necessarie per eseguire la sonda sono:
 \begin{itemize}
     \item \texttt{kms:ListKeys}
     \item \texttt{kms:GetKeyRotationStatus}
@@ -1084,7 +1106,8 @@ Il controllo \textbf{RDS.3} verifica che le istanze RDS abbiano la crittografia 
 Il controllo \textbf{RDS.13} verifica che gli aggiornamenti automatici delle versioni minori siano abilitati per le istanze RDS. La funzione esegue una chiamata a \texttt{describe\_db\_instances} per ottenere una lista di istanze di DB. Se non esiste alcuna istanza, il controllo viene marcato come passato in quanto non sono presenti istanze da verificare. Se esiste almeno un'istanza, si itera tra di esse e si estrae il valore \texttt{AutoMinorVersionUpgrade}. Se il valore esiste, l'istanza viene aggiunta alla lista \texttt{auto\_minor}, altrimenti alla lista \texttt{no\_auto\_minor}. Se esiste almeno un'istanza che non ha gli aggiornamenti automatici delle versioni minori abilitati, il controllo viene marcato come fallito, altrimenti passato.
 
 La funzione \texttt{execute\_all\_controls} è identica a quella descritta nella sezione \ref{sec:implementazione}. Si crea una catena di \textbf{forward} di 5 atomi: \texttt{init}, \texttt{rds\_check\_2}, \texttt{rds\_check\_3}, \texttt{rds\_check\_13} e \texttt{execute\_all\_controls}. Anche la gestione delle eccezioni è identica a quella di default.
-L' azione AWS necessaria per eseguire la sonda è:
+
+L'\textbf{azione AWS} necessaria per eseguire la sonda è:
 \begin{itemize}
     \item \texttt{rds:DescribeDBInstances}
 \end{itemize}
@@ -1188,7 +1211,7 @@ Il controllo \textbf{EKS 2.1.1} verifica che i log di audit dell'API server sian
 
 La funzione \texttt{execute\_all\_controls} è identica a quella descritta nella sezione \ref{sec:implementazione}. Si crea una catena di \textbf{forward} di 9 atomi: \texttt{init}, \texttt{eks\_check\_1}, \texttt{eks\_check\_2}, \texttt{eks\_check\_3}, \texttt{eks\_check\_6}, \texttt{eks\_check\_7}, \texttt{eks\_check\_8}, \texttt{eks\_check\_2\_1\_1} e \texttt{execute\_all\_controls}. Anche la gestione delle eccezioni è identica a quella di default.
 
-Le azioni AWS necessarie per eseguire la sonda sono:
+Le \textbf{azioni AWS} necessarie per eseguire la sonda sono:
 \begin{itemize}
     \item \texttt{eks:ListClusters}
     \item \texttt{eks:DescribeCluster}

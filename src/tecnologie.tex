@@ -42,7 +42,7 @@ Ogni sonda prodotta viene inserita in un repository GitLab dedicato, che contien
 \section{MoonCloud}
 \label{sec:mooncloud}
 
-MoonCloud è un framework per la valutazione di conformità e assurance di applicazioni o infrastrutture ICT che permette di avere una verifica completa dei servizi durante il loro ciclo di vita. Si concentra prevalentemente su security, AI e machine learning assurance.
+MoonCloud \cite{8647247} è un framework per la valutazione di conformità e assurance di applicazioni o infrastrutture ICT che permette di avere una verifica completa dei servizi durante il loro ciclo di vita. Si concentra prevalentemente su security, AI e machine learning assurance.
 
 Le sonde di assurance sono sviluppate per essere eseguite su MoonCloud, che fornisce un \textbf{driver} che defisce struttura e funzionalità delle sonde. Si tratta di una macchina a stati finiti con due principali flow di esecuzione: \textbf{forward} e \textbf{rollback}. Il flow forward è il flusso principale di esecuzione della sonda, in cui vengono eseguiti i controlli di conformità e le azioni correttive. Il flow rollback viene eseguito in caso di errore o fallimento del flow forward, e consente di ripristinare lo stato precedente della sonda in caso il target sia stato modificato. La sonda prende in input dei parametri relativi al target di esecuzione e restituisce in output un risultato predefinito definito secondo un preciso schema arricchito poi dal programmatore.
 
