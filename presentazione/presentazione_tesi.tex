@@ -9,6 +9,7 @@
 \documentclass{beamer}
 \usepackage{amsfonts,amsmath,oldgerm}
 \usepackage{graphics,graphicx}
+\usepackage{mdframed} 
 \usetheme{_statale}
 \usefonttheme[onlymath]{serif}
 
@@ -84,6 +85,18 @@
     \includegraphics[width=\textwidth]{assets/cisnist.png}
     \end{column}
     \end{columns}
+\end{frame}
+
+\begin{frame}{Standard di riferimento}
+    \framesubtitle{Esempio di controllo}
+    \begin{mdframed}[backgroundcolor=statalegrey]
+    \textbf{1.4 Ensure MFA is enabled for the 'root' user account (Automated)}
+    \begin{itemize}
+        \item \textbf{Profile Applicability:} Level 1
+        \item \textbf{Description:} The 'root' user account is the most privileged user in an AWS account. Multi-factor Authentication (MFA) adds an extra layer of protection on top of a username and password. With MFA enabled, when a user signs in to an AWS website, they will be prompted for their username and password as well as for an authentication code from their AWS MFA device.
+        \item \textbf{Rationale:} Enabling MFA provides increased security for console access as it requires the authenticating principal to possess a device that emits a time-sensitive key and have knowledge of a credential.
+    \end{itemize} 
+\end{mdframed}
 \end{frame}
 
 \begin{frame}{Tecnologie utilizzate}
