@@ -48,25 +48,37 @@ Il lavoro si articola in quattro fasi principali:
 \begin{enumerate}
   \item \textbf{Analisi dello stato dell'arte}, con studio degli standard di sicurezza (CIS, NIST, AWS Security Hub) e delle caratteristiche dei principali servizi offerti da AWS. Inoltre, comprensione del framework MoonCloud e delle sue funzionalità, che fornisce un ambiente di esecuzione e deployment per le sonde di assurance, oltre che alla gestione dei dati in input per la configurazione delle stesse.
   
-  \item \textbf{Progettazione delle sonde di assurance}, traducendo i controlli descrittivi dei benchmark in logiche eseguibili. Ogni sonda è stata progettata per un servizio AWS specifico (IAM, EC2, S3, RDS, EKS, ecc.).
+  \item \textbf{Progettazione delle sonde di assurance}, traducendo i controlli descrittivi dei benchmark in logiche eseguibili. Ogni sonda è stata progettata per un servizio AWS specifico:
+  \begin{itemize}
+    \item \texttt{aws\_sqs}: verifica riguardo crittografia a riposo, tagging e policy di accesso.
+    \item \texttt{aws\_inspector}: verifica dell'abilitazione del servizio.
+    \item \texttt{aws\_iam}: verifica della configurazione delle policy IAM, gestione delle credenziali e dei permessi.
+    \item \texttt{aws\_ec2}: verifica sulla sicurezza della rete, logging, crittografia.
+    \item \texttt{aws\_s3}: verifica dell'accesso, logging, sicurezza delle operazioni su bucket.
+    \item \texttt{aws\_account}: verifica del contatto di sicurezza.
+    \item \texttt{aws\_config}:verifica della registrazione delle configurazioni delle risorse.
+    \item \texttt{aws\_cloudtrail}: verifica delle code multi-regione, crittografia, log su bucket S3.
+    \item \texttt{aws\_efs}: verifica della crittografia a riposo.
+    \item \texttt{aws\_kms}: verifica della rotazione delle chiavi.
+    \item \texttt{aws\_rds}: verifica dell'accesso, crittografia e aggiornamenti automatici.
+    \item \texttt{aws\_eks}: verifica dell'uso di versioni supportate, crittografia a riposo, tagging, logging.
+  \end{itemize}
   
   \item \textbf{Implementazione e testing}, attraverso lo sviluppo di 13 sonde in Python usando la libreria \texttt{Boto3}, containerizzate con Docker e dotate di pipeline CI/CD per l'integrazione nel framework MoonCloud. Ogni sonda segue un'architettura standard e produce output strutturato, adatto ad una valutazione intuitiva. In totale sono stati implementati 51 controlli tra i vari servizi AWS.
   
   \item \textbf{Integrazione nella piattaforma MoonCloud}, che consente l'esecuzione delle sonde in ambienti reali, la pianificazione periodica dei controlli e la visualizzazione dei risultati globali tramite dashboard.
 \end{enumerate}
 
-Le sonde sono classificate in base alla tipologia di controlli: una parte è conforme al benchmark CIS AWS Foundations v3, un'altra estende le verifiche a componenti come Amazon EKS, SQS e Inspector, non coperti dai benchmark principali. Di particolare rilievo è la sonda \texttt{aws\_vulnerability}, che esegue analisi dinamiche sulle vulnerabilità note (CVE), offrendo una valutazione della sicurezza delle risorse AWS ECR, EC2, e Lambda.
+Le sonde sono classificate in base alla tipologia di controlli: una parte è conforme al benchmark CIS AWS Foundations v3, un'altra estende le verifiche a componenti come Amazon EKS, SQS e Inspector, non coperti dai benchmark principali. Di particolare rilievo è la sonda \texttt{aws\_vulnerability}, che esegue analisi dinamiche sulle vulnerabilità note (CVE), offrendo una valutazione della sicurezza delle risorse AWS ECR, EC2, e Lambda. 
 
-Tutte le componenti sono state progettate con attenzione all'affidabilità, all'integrazione e alla gestione degli errori. Il lavoro ha richiesto competenze tecniche, capacità di documentazione, organizzazione e adattamento a un contesto professionale.
+Tutte le componenti sono state progettate con attenzione all'affidabilità, all'integrazione e alla gestione degli errori. Il lavoro ha richiesto competenze tecniche, capacità di documentazione e organizzazione del lavoro.
 
 \vspace{1em}
 
 \noindent
 \textbf{Sviluppi futuri} prevedono l'estensione delle sonde ad altri cloud provider, l'integrazione con nuovi benchmark, e l'estensione delle sonde per coprire regioni multiple e servizi aggiuntivi.  
+\vspace{1em}
 
-\vspace{2em}
-
-\noindent
-Il progetto ha contribuito ad arricchire la piattaforma MoonCloud con nuove funzionalità operative e, allo stesso tempo, ha rappresentato un'esperienza applicativa nel campo della sicurezza cloud.
+Il progetto ha contribuito ad arricchire la piattaforma MoonCloud con nuove funzionalità operative e ha rappresentato un'esperienza applicativa nel campo della sicurezza cloud.
 
 \end{document}
