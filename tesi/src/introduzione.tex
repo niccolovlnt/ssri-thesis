@@ -1,4 +1,21 @@
+% Negli ultimi anni il cloud computing ha assunto un ruolo sempre più centrale nel panorama informatico, e in particolare Amazon Web Services (AWS) è diventato uno dei principali fornitori di servizi cloud nel mondo. Con l'aumento della complessità delle architetture cloud, è diventato fondamentale garantire la sicurezza e l'affidabilità dei sistemi distribuiti. In questo contesto, le sonde di assurance rappresentano uno strumento utile per garantire la conformità a standard di sicurezza come il CIS AWS Foundations Benchmark. Queste sonde consentono di eseguire controlli automatizzabili sulle proprietà fondamentali di istanze e servizi AWS per garantire che siano configurati in modo sicuro e conforme.
+
 \chapter{Introduzione}
 \label{cap:introduzione}
-    
-Negli ultimi anni il cloud computing ha assunto un ruolo sempre più centrale nel panorama informatico, e in particolare Amazon Web Services (AWS) è diventato uno dei principali fornitori di servizi cloud nel mondo. Con l'aumento della complessità delle architetture cloud, è diventato fondamentale garantire la sicurezza e l'affidabilità dei sistemi distribuiti. In questo contesto, le sonde di assurance rappresentano uno strumento utile per garantire la conformità a standard di sicurezza come il CIS AWS Foundations Benchmark. Queste sonde consentono di eseguire controlli automatizzabili sulle proprietà fondamentali di istanze e servizi AWS per garantire che siano configurati in modo sicuro e conforme.
+
+Negli ultimi anni, il cloud computing ha assunto un ruolo sempre più centrale nel panorama informatico. In particolare, Amazon Web Services (AWS) si è affermato come uno dei principali fornitori globali di servizi cloud, grazie alla sua gamma di strumenti scalabili e altamente configurabili. Tuttavia, con l'aumento della complessità delle architetture distribuite, è diventato essenziale garantire oltre alle proprietà non funzionali come la disponibilità e le prestazioni, anche la sicurezza e l'affidabilità dei sistemi. 
+
+La configurazione errata di una risorsa cloud può rappresentare la causa di incidenti di sicurezza. Per questo motivo, negli ambienti AWS, risulta fondamentale implementare strumenti capaci di verificare automaticamente la corretta configurazione delle risorse, in base a standard di sicurezza dedicati.
+
+All'interno di questo elaborato si propone lo sviluppo di una suite di \emph{sonde di assurance}, ovvero strumenti capaci di eseguire controlli automatizzabili sulla configurazione dei servizi AWS, valutandone la compliance rispetto a benchmark riconosciuti, come il \emph{CIS AWS Foundations Benchmark}, il \emph{CIS Amazon EKS Benchmark} e le raccomandazioni \emph{NIST SP 800-53}. Le sonde sono state integrate in MoonCloud, un framework per la gestione e l'analisi dell'assurance della sicurezza in ambienti ICT.
+
+Il lavoro si articola in più fasi, ciascuna descritta nei capitoli successivi.
+
+Nel \textbf{Capitolo 2}, viene presentato lo \textit{stato dell'arte}, con una descrizione dei termini \emph{assurance} e \emph{compliance}, una panoramica dei principali standard di sicurezza, delle best practice per la protezione in ambienti cloud e dei benchmark utilizzati come riferimento per la verifica della conformità.
+
+Nel \textbf{Capitolo 3}, si descrivono le \textit{tecnologie utilizzate}, tra cui Python, Docker, GitLab e MoonCloud, analizzando le motivazioni delle scelte tecniche e l'architettura del framework su cui si basano le sonde.
+
+Il \textbf{Capitolo 4} è dedicato al \textit{caso di studio}: viene illustrata in dettaglio la progettazione e l'implementazione delle sonde sviluppate, riportando ogni controllo implementato e le relative funzionalità. Inoltre, si tratta la loro integrazione nella piattaforma MoonCloud.
+
+Infine, nel \textbf{Capitolo 5}, vengono tratte le \textit{conclusioni}, accompagnate da una riflessione sugli sviluppi futuri: tra questi, l'estensione della compliance a servizi aggiuntivi, l'estensione a nuovi benchmark, l'integrazione con ulteriori cloud provider.
+

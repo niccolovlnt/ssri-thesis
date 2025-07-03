@@ -54,7 +54,7 @@ Dott. Antongiacomo Polimeno
 \vspace{1em}
 Il presente elaborato affronta il tema della sicurezza in ambienti cloud, con particolare riferimento alle verifiche di compliance all'interno della piattaforma Amazon Web Services (AWS). 
 
-Scopo della tesi è la progettazione e realizzazione di una suite di \textbf{13} sonde di \emph{security assurance}, capaci di eseguire \textbf{51} controlli automatizzabili sulla configurazione delle risorse AWS, verificandone la conformità rispetto a benchmark di sicurezza, come il \emph{CIS AWS Foundations Benchmark}, il \emph{CIS Amazon EKS Benchmark} e le raccomandazioni \emph{NIST SP 800-53}.
+Scopo della tesi è garantire l'aderenza degli ambienti cloud a benchmark di sicurezza e best practice, come il \emph{CIS AWS Foundations Benchmark}, il \emph{CIS Amazon EKS Benchmark} e le raccomandazioni \emph{NIST SP 800-53}. Per raggiungere questo obiettivo, è stata sviluppata una suite di \textbf{13} sonde di \emph{security assurance} in grado di eseguire \textbf{51} controlli automatizzabili sulla configurazione delle risorse AWS, verificandone la conformità.
 
 Il lavoro si articola in quattro fasi principali:
 
@@ -63,21 +63,21 @@ Il lavoro si articola in quattro fasi principali:
   
   \item \textbf{Progettazione delle sonde di assurance}, traducendo i controlli descrittivi dei benchmark in logiche eseguibili. Ogni sonda è stata progettata per un servizio AWS specifico:
   \begin{itemize}
-    \item \texttt{aws\_sqs}: verifica riguardo crittografia a riposo, tagging e policy di accesso.
-    \item \texttt{aws\_inspector}: verifica dell'abilitazione del servizio.
-    \item \texttt{aws\_iam}: verifica della configurazione delle policy IAM, gestione delle credenziali e dei permessi.
-    \item \texttt{aws\_ec2}: verifica sulla sicurezza della rete, logging, crittografia.
-    \item \texttt{aws\_s3}: verifica dell'accesso, logging, sicurezza delle operazioni su bucket.
-    \item \texttt{aws\_account}: verifica del contatto di sicurezza.
-    \item \texttt{aws\_config}:verifica della registrazione delle configurazioni delle risorse.
-    \item \texttt{aws\_cloudtrail}: verifica delle code multi-regione, crittografia, log su bucket S3.
-    \item \texttt{aws\_efs}: verifica della crittografia a riposo.
-    \item \texttt{aws\_kms}: verifica della rotazione delle chiavi.
-    \item \texttt{aws\_rds}: verifica dell'accesso, crittografia e aggiornamenti automatici.
-    \item \texttt{aws\_eks}: verifica dell'uso di versioni supportate, crittografia a riposo, tagging, logging.
+    \item \texttt{aws\_sqs}: \textbf{3} controlli, relativi a crittografia a riposo, tagging e policy di accesso.
+    \item \texttt{aws\_inspector}: \textbf{4} controlli, relativi all'abilitazione del servizio.
+    \item \texttt{aws\_iam}: \textbf{13} controlli, relativi alla configurazione delle policy IAM, gestione delle credenziali e dei permessi.
+    \item \texttt{aws\_ec2}: \textbf{7} controlli, relativi alla sicurezza della rete, logging e crittografia.
+    \item \texttt{aws\_s3}: \textbf{6} controlli, relativi alla verifica degli accessi, logging e sicurezza delle operazioni sui bucket.
+    \item \texttt{aws\_account}: \textbf{1} controllo, relativo alla verifica del contatto di sicurezza.
+    \item \texttt{aws\_config}: \textbf{1} controllo, relativo alla registrazione delle configurazioni delle risorse.
+    \item \texttt{aws\_cloudtrail}: \textbf{4} controlli, relativi alle code multi-regione, crittografia e log su bucket S3.
+    \item \texttt{aws\_efs}: \textbf{1} controllo, relativo alla crittografia a riposo.
+    \item \texttt{aws\_kms}: \textbf{1} controllo, relativo alla rotazione delle chiavi.
+    \item \texttt{aws\_rds}: \textbf{3} controlli, relativi alla verifica degli accessi, crittografia e aggiornamenti automatici.
+    \item \texttt{aws\_eks}: \textbf{7} controlli, relativi all'uso di versioni supportate, crittografia a riposo, tagging e logging.
   \end{itemize}
   
-  \item \textbf{Implementazione e testing}, attraverso lo sviluppo di 13 sonde in Python usando la libreria \texttt{Boto3}, containerizzate con Docker e dotate di pipeline CI/CD per l'integrazione nel framework MoonCloud. Ogni sonda segue un'architettura standard e produce output strutturato, adatto ad una valutazione intuitiva. In totale sono stati implementati 51 controlli tra i vari servizi AWS.
+  \item \textbf{Implementazione e testing}, attraverso lo sviluppo di 13 sonde in Python containerizzate con Docker e dotate di pipeline CI/CD per l'integrazione nel framework MoonCloud. Ogni sonda segue un'architettura standard e produce output strutturato, adatto ad una valutazione intuitiva.
   
   \item \textbf{Integrazione nella piattaforma MoonCloud}, che consente l'esecuzione delle sonde in ambienti reali, la pianificazione periodica dei controlli e la visualizzazione dei risultati globali tramite dashboard.
 \end{enumerate}
@@ -91,7 +91,5 @@ Tutte le componenti sono state progettate con attenzione all'affidabilità, all'
 \noindent
 \textbf{Sviluppi futuri} prevedono l'estensione delle sonde ad altri cloud provider, l'integrazione con nuovi benchmark, e l'estensione delle sonde per coprire regioni multiple e servizi aggiuntivi.  
 \vspace{1em}
-
-Il progetto ha contribuito ad arricchire la piattaforma MoonCloud con nuove funzionalità operative e ha rappresentato un'esperienza applicativa nel campo della sicurezza cloud.
 
 \end{document}

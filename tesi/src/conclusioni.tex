@@ -1,15 +1,13 @@
 \chapter{Conclusioni}
 \label{cap:conclusioni}
 
-In questo capitolo si riassumono i risultati ottenuti e si discutono le implicazioni del lavoro svolto. Si evidenziano i principali aspetti del progetto, le sfide affrontate e le soluzioni implementate.
-
 L'obiettivo di questo lavoro è stato quello di sviluppare delle soluzioni per la verifica della compliance in ambienti Cloud, in particolare AWS. La prima parte del progetto ha previsto l'analisi delle direttive CIS e NIST. Queste erano disponibili direttamente nella documentazione web di AWS Security Hub, da cui è stato semplice estrarre le richieste di ogni controllo. Per quanto riguarda invece documenti più specifici, come il CIS Amazon Elastic Kubernetes Service Benchmark, è stata necessaria la consultazione dell'intero documento per individuare i controlli pertinenti.
 
 La scelta dei controlli da implementare è stata fatta in modo da aderire completamente alle direttive del CIS AWS Foundations Benchmark, includendo anche direttive NIST SP 800-53 per sonde riguardanti servizi come SQS, Inspector ed EKS, non trattate nel CIS.
 
 Una volta compresi i requisiti, si è proceduto con lo studio approfondito del funzionamento della piattaforma MoonCloud e del suo driver per la realizzazione delle sonde. Questa fase ha rappresentato una delle principali sfide del progetto, poiché la comprensione della struttura delle sonde e dei parametri richiesti per l'esecuzione dei controlli è risultata fondamentale per garantirne l'integrazione corretta nella piattaforma. La programmazione delle sonde è stata effettuata in Python, utilizzando la libreria Boto3 per interagire con i servizi AWS. Anche in questo caso, la consultazione approfondita della documentazione dei client Boto3 si è rivelata cruciale per comprendere quali funzioni restituissero i parametri utili ai fini del controllo.
 
-Una volta implementate le sonde, si è proceduto con la loro integrazione nella piattaforma MoonCloud, a partire dalla creazione nel backend di Control e Abstract Evaluation Rule. Questi sono necessari per creare una sonda eseguibile, associarvi l'immagine Docker costruita dalla pipeline CI/CD, creare un form per i parametri di input e catalogare la sonda nella dashboard di MoonCloud. 
+Successivamente si è proceduto con l'integrazione delle sonde nella piattaforma MoonCloud, a partire dalla creazione nel backend di \emph{Control} e \emph{Abstract Evaluation Rule}. Questi sono necessari per creare una sonda eseguibile, associarvi l'immagine Docker costruita dalla pipeline CI/CD, creare un form per i parametri di input e catalogare la sonda nella dashboard di MoonCloud. 
 
 L'ultimo passaggio ha previsto l'esecuzione delle sonde e la verifica dei risultati ottenuti sull'account di demo. I risultati sono stati soddisfacenti, dimostrando che le sonde sono in grado di verificare la compliance dei servizi AWS rispetto ai controlli implementati. Le sonde hanno prodotto output coerenti con le aspettative e le istanze di AWS sono state correttamente valutate in base ai criteri stabiliti.
 
@@ -21,9 +19,14 @@ Le principali sfide affrontate sono state dunque la varietà delle API tra i div
 Tra i possibili sviluppi futuri del progetto si individuano due principali direzioni:
 
 \begin{itemize}
+  \item \textbf{Estensione della copertura dei controlli}: attualmente le sonde sviluppate coprono integralmente il \emph{CIS AWS Foundations Benchmark} e alcuni controlli tratti dalle raccomandazioni \emph{NIST SP 800-53}. Per servizi specifici come SQS e Inspector, sono stati inclusi anche controlli suggeriti dalla documentazione di \emph{AWS Security Hub}. Inoltre, sono stati implementati controlli per EKS, seguendo il \emph{CIS Amazon EKS Benchmark}. Tuttavia, esistono altri benchmark CIS per ulteriori servizi AWS che non sono ancora stati coperti e che rappresentano una possibile evoluzione futura. Anche \emph{AWS Security Hub} propone controlli basati su altri standard di sicurezza, come \emph{PCI-DSS} o ulteriori direttive \emph{NIST}. L'obiettivo è quello di estendere la copertura delle sonde, per aumentare la superficie di compliance e garantire una verifica più completa delle risorse AWS.
+
+
+
+
   \item \textbf{Estensione dell'implementazione multiregione}: attualmente solo la sonda \texttt{aws\_sqs} supporta la verifica in più regioni AWS. L'obiettivo è estendere questa funzionalità a tutte le sonde, in modo da garantire una copertura completa e centralizzata delle verifiche di compliance in scenari distribuiti su più regioni. 
 
-  \item \textbf{Adattamento ad altri cloud provider}: la struttura modulare delle sonde e l'architettura della piattaforma MoonCloud costituiscono una buona base per estendere le verifiche di compliance anche ad altri ambienti cloud, come Microsoft Azure o Google Cloud Platform. Naturalmente, ciò richiederà modifiche alle sonde per adattarle alle API e ai servizi specifici di ciascun provider. Questo permetterebbe di ampliare l'utilizzo della piattaforma MoonCloud e di offrire un sistema di compliance più ampio e versatile.
+  \item \textbf{Adattamento ad altri cloud provider}: la struttura modulare delle sonde e l'architettura della piattaforma MoonCloud costituiscono una buona base per estendere le verifiche di compliance anche ad altri ambienti cloud, come Microsoft Azure o Google Cloud Platform. Naturalmente, ciò richiederà modifiche alle sonde per adattarle alle API e ai servizi specifici di ciascun provider. Questo permetterebbe di ampliare l'utilizzo della piattaforma MoonCloud e di offrire un sistema di compliance più ampio.
 \end{itemize}
 
 In conclusione, il progetto ha raggiunto gli obiettivi prefissati, dimostrando la fattibilità di implementare un sistema di verifica della compliance in ambienti cloud mediante l'utilizzo di MoonCloud. I risultati ottenuti offrono una base solida per ulteriori sviluppi, contribuendo a rendere la sicurezza e la compliance nel cloud più accessibili e gestibili, anche in contesti aziendali dove si desidera una supervisione continua e automatizzata della sicurezza in questo ambito.
