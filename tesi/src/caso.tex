@@ -1364,24 +1364,15 @@ In ogni zona è possibile creare dei \textit{Target}, ovvero le risorse da anali
 
 Una volta definito il target, nella sezione \textit{Evaluations} è possibile creare un \textit{Evaluation}, ovvero eseguire una sonda che che produce un risultato, una valutazione, che può essere positiva o negativa. Durante la creazione si seleziona la sonda di interesse, si associa ad un Target, si specificano i parametri di configurazione definiti nel form specifico della sonda ed essa viene eseguita. Inoltre, è possibile specificare se si tratta di un esecuzione \textit{One Shot} o \textit{Scheduled}, ovvero se si desidera eseguire la sonda una sola volta o se si desidera pianificarne l'esecuzione periodica ogni ora o ogni giorno.
 
-Quando viene eseguita il risultato JSON mostrato nella sezione \ref{sec:implementazione} viene mostrato in frontend tramite un menù a tendina che consente di espandere i risultati \texttt{raw} e visualizzare le informazioni di dettaglio, come mostrato in Figura \ref{fig:awscloudtrailresult}.
-
-\begin{center}
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{immagini/ideas2text.pdf}
-\caption{Frontend di visualizzazione dei risultati della sonda \texttt{aws\_cloudtrail} su MoonCloud.}
-\label{fig:awscloudtrailresult}
-\end{figure}
-\end{center}
+Quando viene eseguita il risultato JSON mostrato nella sezione \ref{sec:implementazione} viene mostrato in frontend tramite un menù a tendina che consente di espandere i risultati \texttt{raw} e visualizzare le informazioni di dettaglio.
 
 Per quanto riguarda i risultati \texttt{refined} invece, essi oltre alla visualizzazione mostrata sopra hanno una sezione dedicata nel menù della dashboard, in cui è possibile ogni CVE e visualizzare informazioni come il nome, la descrizione, il punteggio CVSS per cui è possibile anche l'ordinamento, e il nome del controllo che l'ha generata: 
 
 \begin{center}
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{immagini/ideas2text.pdf}
-\caption{Visualizzazione delle CVE su MoonCloud.}
+\includegraphics[width=\textwidth]{immagini/cve.png}
+\caption{Esempio di visualizzazione delle CVE su MoonCloud.}
 \label{fig:mooncloudcve}
 \end{figure}
 \end{center}
@@ -1391,8 +1382,8 @@ Da ultimo, pagina principale mostra dei grafici a torta che mostrano la percentu
 \begin{center}
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{immagini/ideas2text.pdf}
-\caption{Dashboard di MoonCloud con i grafici di compliance e le sonde eseguite.}
+\includegraphics[width=\textwidth]{immagini/homepage.png}
+\caption{Dashboard di MoonCloud con i grafici di compliance.}
 \label{fig:dashboardmooncloud}
 \end{figure}
 \end{center}
