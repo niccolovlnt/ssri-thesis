@@ -7,7 +7,7 @@ Questo capitolo è dedicato alla descrizione del caso di studio scelto per lo sv
 
 Lo sviluppo delle sonde di assurance per AWS è stato organizzato in più fasi. L'obiettivo principale era quello di creare sonde in grado di verificare automaticamente se risorse e servizi AWS rispettando i 51 controlli di sicurezza definiti nei benchmark in questione. 
 
-Le sonde sono state progettate per essere eseguite all'interno di \textit{MoonCloud}, un framework che si occupa di gestire l'intero ciclo di vita delle sonde: dalla configurazione all'esecuzione, fino alla visualizzazione dei risultati.
+Le sonde sono state progettate per essere eseguite all'interno di \textit{Moon Cloud}, un framework che si occupa di gestire l'intero ciclo di vita delle sonde: dalla configurazione all'esecuzione, fino alla visualizzazione dei risultati.
 
 \paragraph{Analisi e progettazione} Per ogni sonda è stato necessario prima di tutto comprendere i controlli di sicurezza descritti nei benchmark. Essendo documenti di tipo descrittivo, è stato fondamentale tradurre ogni controllo in logica eseguibile, individuando:
 \begin{itemize}
@@ -16,9 +16,9 @@ Le sonde sono state progettate per essere eseguite all'interno di \textit{MoonCl
     \item le API di AWS necessarie, tramite la libreria \texttt{boto3} in Python.
 \end{itemize}
 
-Una volta chiarita la logica, si è passati alla progettazione vera e propria della sonda. Ogni sonda ha una struttura comune: il file \texttt{probe.py} contiene la logica di esecuzione, mentre file come \texttt{schema.json} e \texttt{test.json} servono per la gestione dell'input. La sonda viene poi containerizzata tramite Docker e integrata con MoonCloud.
+Una volta chiarita la logica, si è passati alla progettazione vera e propria della sonda. Ogni sonda ha una struttura comune: il file \texttt{probe.py} contiene la logica di esecuzione, mentre file come \texttt{schema.json} e \texttt{test.json} servono per la gestione dell'input. La sonda viene poi containerizzata tramite Docker e integrata con Moon Cloud.
 
-\begin{lstlisting}[caption={Struttura di ogni sonda per MoonCloud}]
+\begin{lstlisting}[caption={Struttura di ogni sonda per Moon Cloud}]
 aws_sonda/
 |-- probe/
 |   |-- probe.py
@@ -38,12 +38,12 @@ L'obiettivo dei test era verificare che:
 \begin{itemize}
     \item i controlli restituissero i risultati attesi,
     \item le eventuali eccezioni venissero gestite in modo chiaro,
-    \item la struttura dell'output fosse compatibile con quella richiesta da MoonCloud.
+    \item la struttura dell'output fosse compatibile con quella richiesta da Moon Cloud.
 \end{itemize}
 
-\paragraph{Integrazione su MoonCloud} Una volta completata e testata, ogni sonda viene integrata nel framework MoonCloud. Il codice sorgente viene salvato su GitLab, e una pipeline CI/CD si occupa di creare automaticamente l'immagine Docker della sonda.
+\paragraph{Integrazione su Moon Cloud} Una volta completata e testata, ogni sonda viene integrata nel framework Moon Cloud. Il codice sorgente viene salvato su GitLab, e una pipeline CI/CD si occupa di creare automaticamente l'immagine Docker della sonda.
 
-MoonCloud permette poi di configurare ed eseguire la sonda tramite una dashboard web. Per ogni sonda vengono definite:
+Moon Cloud permette poi di configurare ed eseguire la sonda tramite una dashboard web. Per ogni sonda vengono definite:
 \begin{itemize}
     \item un \textit{Control}, che specifica il driver, i metadati di input, il tipo di credenziali richieste e altre informazioni tecniche;
     \item una \textit{Abstract Evaluation Rule}, che definisce il nome, la descrizione, l'immagine visibile in dashboard, e i controlli a cui la sonda è collegata.
@@ -118,10 +118,10 @@ CMD ["/usr/src/app/probe/probe.py"]
 
 Il Dockerfile si struttura in diverse fasi che definiscono il processo di creazione dell'immagine. La fase iniziale stabilisce l'\textbf{ambiente} di base utilizzando l'immagine \texttt{python:3.10} e definisce gli argomenti \texttt{GITLAB\_TOKEN\_USER} e \texttt{GITLAB\_TOKEN} che vengono passati alla pipeline di CI/CD per l'autenticazione.
 Creando la \textbf{directory} \texttt{/usr/src/app} si imposta come directory di lavoro. Il file \texttt{requirements.txt} viene copiato per primo nella directory per installare le dipendenze necessarie per la sonda.
-Successivamente si modifica il file \texttt{requirements.txt} inserendo le credenziali di \textbf{autenticazione} per il driver MoonCloud, per poi installare le \textbf{dipendenze} elencate nello stesso.
+Successivamente si modifica il file \texttt{requirements.txt} inserendo le credenziali di \textbf{autenticazione} per il driver Moon Cloud, per poi installare le \textbf{dipendenze} elencate nello stesso.
 La fase finale del build prevede la \textbf{copia} dei file necessari all'esecuzione: tutti i file sorgente vengono destinati alla directory di lavoro. Da ultimo il file \texttt{probe.py} viene reso \textbf{eseguibile} e viene configurato come entry point del container, garantendo che la sonda si avvii automaticamente all'esecuzione del container.
 
-\paragraph{requirements.txt} Questo file elenca le dipendenze Python necessarie per eseguire la sonda. Le uniche necessarie per le sonde AWS sono \texttt{boto3}, \texttt{requests} e il driver di MoonCloud. Di seguito è riportato il contenuto del file \texttt{requirements.txt}:
+\paragraph{requirements.txt} Questo file elenca le dipendenze Python necessarie per eseguire la sonda. Le uniche necessarie per le sonde AWS sono \texttt{boto3}, \texttt{requests} e il driver di Moon Cloud. Di seguito è riportato il contenuto del file \texttt{requirements.txt}:
 
 \begin{lstlisting}[caption ={File \texttt{requirements.txt} per le dipendenze della sonda}]
 git+https://repository.v2.moon-cloud.eu/dev/driver.git
@@ -129,7 +129,7 @@ requests==2.32.3
 boto3==1.37.14
 \end{lstlisting}
 
-\paragraph{README.md} Questo file contiene informazioni generali sulla sonda, schema di input e output, form per la validazione su MoonCloud e azioni AWS necessarie per l'esecuzione della sonda. Di seguito è riportato un esempio del contenuto del file \texttt{README.md}, che varia a seconda della sonda:
+\paragraph{README.md} Questo file contiene informazioni generali sulla sonda, schema di input e output, form per la validazione su Moon Cloud e azioni AWS necessarie per l'esecuzione della sonda. Di seguito è riportato un esempio del contenuto del file \texttt{README.md}, che varia a seconda della sonda:
 
 \begin{lstlisting}[caption={File \texttt{README.md} per la sonda AWS SQS}]
 # AWS SQS
@@ -179,7 +179,7 @@ index.html) to interact with AWS ...
 }
 ```
 
-## MoonCloud Form
+## Moon Cloud Form
 
 ```json5
 {
@@ -249,9 +249,9 @@ index.html) to interact with AWS ...
 
 \paragraph{probe.py} Questo file implementa la logica della sonda e tutti i controlli di conformità per un dato target. Esistono delle caratteristiche strutturali comuni a tutte le sonde AWS: di seguito si analizzano le principali funzioni e classi implementate.
 
-Ogni sonda inizia con lo shebang \texttt{\#!/usr/bin/env python3} per indicare che il file deve essere eseguito con Python 3. La sonda importa le librerie necessarie e quelle comuni a tutte le sonde AWS sono \texttt{boto3} e \texttt{typing}. Inoltre è fondamentale importare le componenti del driver di MoonCloud: \texttt{abstract\_probe, atom, result, entrypoint}.
+Ogni sonda inizia con lo shebang \texttt{\#!/usr/bin/env python3} per indicare che il file deve essere eseguito con Python 3. La sonda importa le librerie necessarie e quelle comuni a tutte le sonde AWS sono \texttt{boto3} e \texttt{typing}. Inoltre è fondamentale importare le componenti del driver di Moon Cloud: \texttt{abstract\_probe, atom, result, entrypoint}.
 
-La sonda è una sottoclasse di \texttt{AbstractProbe}, che è una classe base fornita dal driver di MoonCloud: per questo tutto il codice è definito all'interno della classe \texttt{Probe}. 
+La sonda è una sottoclasse di \texttt{AbstractProbe}, che è una classe base fornita dal driver di Moon Cloud: per questo tutto il codice è definito all'interno della classe \texttt{Probe}. 
 
 Come già detto ogni sonda necessita di credenziali di accesso AWS: la funzione \texttt{requi-
 res\_credentials}, quando la sonda viene eseguita, indica la necessità di caricare le credenziali di accesso AWS durante il deployment; durante fase di testing invece vengono caricate dal file \texttt{credentials.json}. Ogni funzione prende come parametri \texttt{self} e \texttt{inputs=none}, per poi ritornare un valore \texttt{bool}. 
@@ -395,7 +395,7 @@ La gestione della funzione \texttt{execute\_all\_controls} è identica a quella 
     \item \texttt{sqs:ListQueueTags}
 \end{itemize}
 
-Il form di MoonCloud è stato configurato per accettare una sola stringa, che viene poi convertita in un array di stringhe nella funzione \texttt{init}. Successivamente, si istanziano $n$ client SQS, uno per ogni regione specificata. La chiamata API per la verifica della correttezza delle credenziali è fatta solo per la prima regione, in quanto non è necessario verificarle per ogni regione. Di seguito è riportato il codice che gestisce queste funzionalità:
+Il form di Moon Cloud è stato configurato per accettare una sola stringa, che viene poi convertita in un array di stringhe nella funzione \texttt{init}. Successivamente, si istanziano $n$ client SQS, uno per ogni regione specificata. La chiamata API per la verifica della correttezza delle credenziali è fatta solo per la prima regione, in quanto non è necessario verificarle per ogni regione. Di seguito è riportato il codice che gestisce queste funzionalità:
 
 \begin{lstlisting}[style=mypython, caption={Parte della funzione \texttt{init} per la sonda \texttt{aws\_sqs}}]
 # split on commas, semicolons or whitespace into list
@@ -846,7 +846,7 @@ La sonda \texttt{aws\_vulnerability} è dedicata alla presentazione delle vulner
 
 La sonda necessita anch'essa di credenziali AWS valide e di una regione in cui Amazon Inspector sia abilitato. In aggiunta, si richiede in input una soglia che indichi il livello minimo di gravità delle vulnerabilità da considerare, stabilitio in base al \textbf{Common Vulnerability Scoring System (CVSS)}, un sistema di classificazione delle vulnerabilità informatiche da 0 a 10, dove 0 indica nessuna vulnerabilità e 10 indica una vulnerabilità critica. La soglia è quindi un intero compreso tra 0 e 10, e se vengono trovate solo vulnerabilità con un punteggio inferiore alla soglia, la sonda risulta compliant.
 
-Da ultimo, in input si richiede anche il tipo di risorse da analizzare in quanto Amazon Inspector consente di eseguire scansioni su risorse EC2, Lambda Functions e container ECR. Il form di MoonCloud consente di selezionare uno o più tipi di risorse, oppure tutte le risorse. 
+Da ultimo, in input si richiede anche il tipo di risorse da analizzare in quanto Amazon Inspector consente di eseguire scansioni su risorse EC2, Lambda Functions e container ECR. Il form di Moon Cloud consente di selezionare uno o più tipi di risorse, oppure tutte le risorse. 
 
 Viene definita per prima la funzione \texttt{\_serialize\_datetimes} che si occupa di serializzare le date in formato ISO 8601, uno standard comune per rappresentare le date in formato stringa. Questa funzione è utilizzata per normalizzare le date dei findings recuperati da Amazon Inspector, in modo da poterle presentare correttamente nella sonda.
 
@@ -867,7 +867,7 @@ La parte successiva della funzione si occupa di processare ogni vulnerabilità t
 \item Le eventuali CWE (Common Weakness Enumeration) correlate,
 \end{itemize}
 
-Questi dati vengono utilizzati per creare un oggetto \texttt{ExtradataCVE} che viene aggiunto ai risultati \texttt{refined} della sonda. Questo tipo di oggetto è definito dal driver di MoonCloud ed è specifico per la presentazione delle vulnerabilità in sonde per MoonCloud; particolare attenzione viene data alla gestione dei risultati: si utilizza il campo \texttt{refined} invece del solito campo \texttt{raw} del driver, in modo da presentare le vulnerabilità in un formato strutturato e facilmente interpretabile dalla dashboard di MoonCloud. Durante questo processo, si tiene traccia del numero totale di vulnerabilità (\texttt{tot\_ctr}) e di quante superano la soglia CVSS impostata (\texttt{above\_ctr}). Infine, la sonda determina il suo stato di conformità: se almeno una vulnerabilità supera la soglia CVSS, \texttt{integer\_result} viene impostato a 1 (non conforme), altrimenti rimane 0 (conforme). Il risultato della sonda riporta sempre il numero di vulnerabilità trovate e quante di esse superano la soglia, fornendo così un quadro completo della situazione delle vulnerabilità delle risorse AWS analizzate.
+Questi dati vengono utilizzati per creare un oggetto \texttt{ExtradataCVE} che viene aggiunto ai risultati \texttt{refined} della sonda. Questo tipo di oggetto è definito dal driver di Moon Cloud ed è specifico per la presentazione delle vulnerabilità in sonde per Moon Cloud; particolare attenzione viene data alla gestione dei risultati: si utilizza il campo \texttt{refined} invece del solito campo \texttt{raw} del driver, in modo da presentare le vulnerabilità in un formato strutturato e facilmente interpretabile dalla dashboard di Moon Cloud. Durante questo processo, si tiene traccia del numero totale di vulnerabilità (\texttt{tot\_ctr}) e di quante superano la soglia CVSS impostata (\texttt{above\_ctr}). Infine, la sonda determina il suo stato di conformità: se almeno una vulnerabilità supera la soglia CVSS, \texttt{integer\_result} viene impostato a 1 (non conforme), altrimenti rimane 0 (conforme). Il risultato della sonda riporta sempre il numero di vulnerabilità trovate e quante di esse superano la soglia, fornendo così un quadro completo della situazione delle vulnerabilità delle risorse AWS analizzate.
 
 La funzione \texttt{atoms} in questo caso crea una catena di \textbf{forward} di 2 atomi: \texttt{init} e \texttt{cve\_scan}. Il codice completo della sonda è riportato nell'appendice \ref{app:aws_vulnerability}.
 
@@ -1243,17 +1243,17 @@ La funzione \texttt{execute\_all\_controls} è identica a quella descritta nella
     \item \texttt{eks:ListIdentityProviderConfigs}
 \end{itemize}
 
-\section{Integrazione in MoonCloud}
+\section{Integrazione in Moon Cloud}
 \label{sec:integrazione}
 
-Le sonde descritte nelle sezioni precedenti sono progettate per essere eseguite e integrate in MoonCloud, come descritto nella sezione \ref{sec:mooncloud}. Questo passaggio è fondamentale per rendere eseguibili nel pratico le sonde e per permettere l'esecuzione periodica e automatizzata delle stesse, in modo da garantire un monitoraggio continuo della compliance delle risorse AWS. 
+Le sonde descritte nelle sezioni precedenti sono progettate per essere eseguite e integrate in Moon Cloud, come descritto nella sezione \ref{sec:Moon Cloud}. Questo passaggio è fondamentale per rendere eseguibili nel pratico le sonde e per permettere l'esecuzione periodica e automatizzata delle stesse, in modo da garantire un monitoraggio continuo della compliance delle risorse AWS. 
 
 \subsection{Backend}
 \label{sec:backend}
 
-Per ogni sonda si crea dapprima un \textbf{Control} nel backend di MoonCloud, una pagina di configurazione accessibile via Web in cui è possibile specificare i parametri di configurazione di ogni sonda eseguibile su MoonCloud. I parametri comprendono \textbf{Controls} \textbf{Abstract Evaluation Rules}. 
+Per ogni sonda si crea dapprima un \textbf{Control} nel backend di Moon Cloud, una pagina di configurazione accessibile via Web in cui è possibile specificare i parametri di configurazione di ogni sonda eseguibile su Moon Cloud. I parametri comprendono \textbf{Controls} \textbf{Abstract Evaluation Rules}. 
 
-Particolare attenzione è data a \textit{Control}: qui si definisce il nome della sonda, il driver recuperato dal repository GitLab, e i \textbf{Metadata}, ovvero un form che definisce i parametri di input della sonda secondo un JSON schema creato secondo il framework \textit{Angular Formly}. I parametri di input sono gli stessi che ogni sonda si aspetta di ricevere in input quando eseguita su MoonCloud. Un esempio di form di configurazione per la sonda \texttt{aws\_sqs} il seguente:
+Particolare attenzione è data a \textit{Control}: qui si definisce il nome della sonda, il driver recuperato dal repository GitLab, e i \textbf{Metadata}, ovvero un form che definisce i parametri di input della sonda secondo un JSON schema creato secondo il framework \textit{Angular Formly}. I parametri di input sono gli stessi che ogni sonda si aspetta di ricevere in input quando eseguita su Moon Cloud. Un esempio di form di configurazione per la sonda \texttt{aws\_sqs} il seguente:
 
 \begin{lstlisting}[style=myjson, caption={Form di configurazione per la sonda \texttt{aws\_sqs}}]
 {
@@ -1340,23 +1340,23 @@ In questo caso per l'implementazione multiregione il campo \texttt{region} è un
 }
 \end{lstlisting}
 
-In questo modo, quando si crea un \textbf{Control} per ogni sonda, sulla dashboard di MoonCloud viene visualizzato in frontend il form definito in JSON, che consente di configurare la sonda con i parametri richiesti, come mostrato in Figura \ref{fig:awscloudtrailform}.
+In questo modo, quando si crea un \textbf{Control} per ogni sonda, sulla dashboard di Moon Cloud viene visualizzato in frontend il form definito in JSON, che consente di configurare la sonda con i parametri richiesti, come mostrato in Figura \ref{fig:awscloudtrailform}.
 
 \begin{center}
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{immagini/form.png}
-\caption{Frontend di configurazione di una sonda di esempio su MoonCloud.}
+\caption{Frontend di configurazione di una sonda di esempio su Moon Cloud.}
 \label{fig:awscloudtrailform}
 \end{figure}
 \end{center}
 
-L'\textit{Abstract Evaluation Rule} invece è necessaria per presentare la sonda sulla dashboard di MoonCloud, in modo che l'utente possa vederla se marcata come pubblica, identificarla anche grazie ad un'immagine di copertina, filtrarla per categoria. 
+L'\textit{Abstract Evaluation Rule} invece è necessaria per presentare la sonda sulla dashboard di Moon Cloud, in modo che l'utente possa vederla se marcata come pubblica, identificarla anche grazie ad un'immagine di copertina, filtrarla per categoria. 
 
 \subsection{Dashboard}
 \label{sec:dashboard}
 
-La dashboard di MoonCloud è accessibile via Web e consente di creare il proprio spazio operativo in cui definire \textit{Zone} da analizzare, quali sonde eseguire e su quali \textit{Target}, con quali credenziali eseguire le sonde e con quali parametri di configurazione.
+La dashboard di Moon Cloud è accessibile via Web e consente di creare il proprio spazio operativo in cui definire \textit{Zone} da analizzare, quali sonde eseguire e su quali \textit{Target}, con quali credenziali eseguire le sonde e con quali parametri di configurazione.
 
 Un account può creare più zone per suddividere le risorse da analizzare, ad esempio in base all'infrastruttura cloud pubblica, come nel caso di AWS, o in base all'infrastruttura privata come in caso di repository GitLab privati, oppure piattaforme di container come Kubernetes o Docker.  
 
@@ -1372,8 +1372,8 @@ Per quanto riguarda i risultati \texttt{refined} invece, essi oltre alla visuali
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{immagini/cve.png}
-\caption{Esempio di visualizzazione delle CVE su MoonCloud.}
-\label{fig:mooncloudcve}
+\caption{Esempio di visualizzazione delle CVE su Moon Cloud.}
+\label{fig:Moon Cloudcve}
 \end{figure}
 \end{center}
 
@@ -1383,17 +1383,17 @@ Da ultimo, pagina principale mostra dei grafici a torta che mostrano la percentu
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{immagini/homepage.png}
-\caption{Dashboard di MoonCloud con i grafici di compliance.}
-\label{fig:dashboardmooncloud}
+\caption{Dashboard di Moon Cloud con i grafici di compliance.}
+\label{fig:dashboardMoon Cloud}
 \end{figure}
 \end{center}
 
-La dashboard di MoonCloud è l'interfaccia principale del sistema, che consente di gestire le sonde, i target e le valutazioni, e di visualizzare i risultati delle sonde eseguite. Grazie all'interfaccia intuitiva e alle funzionalità di filtraggio e ordinamento, gli utenti possono facilmente navigare tra le sonde, i target e le valutazioni, e ottenere una visione chiara dello stato di compliance delle proprie risorse cloud. 
+La dashboard di Moon Cloud è l'interfaccia principale del sistema, che consente di gestire le sonde, i target e le valutazioni, e di visualizzare i risultati delle sonde eseguite. Grazie all'interfaccia intuitiva e alle funzionalità di filtraggio e ordinamento, gli utenti possono facilmente navigare tra le sonde, i target e le valutazioni, e ottenere una visione chiara dello stato di compliance delle proprie risorse cloud. 
 
 \section{Demonstration}
 \label{sec:demonstration}
 
-Per dimostrare l'esecuzione delle sonde e la loro integrazione in MoonCloud, esse sono state eseguite su un account AWS di test, in cui sono presenti 3 Zone:
+Per dimostrare l'esecuzione delle sonde e la loro integrazione in Moon Cloud, esse sono state eseguite su un account AWS di test, in cui sono presenti 3 Zone:
 
 \begin{itemize}
     \item \textbf{IaaS}: zona dedicata alle infrastrutture e alle risorse non gestite come IAM, CloudTrail
@@ -1401,6 +1401,6 @@ Per dimostrare l'esecuzione delle sonde e la loro integrazione in MoonCloud, ess
     \item \textbf{SaaS}: zona dedicata ai servizi come S3, Lambda functions
 \end{itemize}
 
-Le sonde sono state catalogate in base alla loro tipologia e sono state eseguite su ogni zona, in modo da verificare la loro funzionalità e l'integrazione con MoonCloud.
+Le sonde sono state catalogate in base alla loro tipologia e sono state eseguite su ogni zona, in modo da verificare la loro funzionalità e l'integrazione con Moon Cloud.
 
-Questo esempio dimostra come le sonde siano in grado di analizzare le risorse AWS in un contesto reale, assimilabile ad un ambiente di produzione aziendale, e come MoonCloud sia in grado di presentare i risultati delle sonde eseguite, consentendo agli utenti di monitorare la compliance delle proprie risorse cloud in modo efficace.
+Questo esempio dimostra come le sonde siano in grado di analizzare le risorse AWS in un contesto reale, assimilabile ad un ambiente di produzione aziendale, e come Moon Cloud sia in grado di presentare i risultati delle sonde eseguite, consentendo agli utenti di monitorare la compliance delle proprie risorse cloud in modo efficace.
