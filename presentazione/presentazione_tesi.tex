@@ -8,10 +8,29 @@
 
 \documentclass{beamer}
 \usepackage{amsfonts,amsmath,oldgerm}
+\usepackage{listings}
 \usepackage{graphics,graphicx}
 \usepackage{mdframed} 
 \usetheme{_statale}
 \usefonttheme[onlymath]{serif}
+
+\lstdefinestyle{statalepython}{
+    language=Python,
+    backgroundcolor=\color{statalegray},
+    basicstyle=\scriptsize\ttfamily,
+    keywordstyle=\color{maincolor}\bfseries,
+    stringstyle=\color{statalegreen},
+    commentstyle=\color{stataledarkgreen}\itshape,
+    numberstyle=\tiny\color{gray},
+    numbers=none,
+    numbersep=8pt,
+    stepnumber=1,
+    showstringspaces=false,
+    breaklines=true,
+    frame=single,
+    tabsize=4,
+    captionpos=b
+}
 
 \newcommand{\testcolor}[1]{\colorbox{#1}{\textcolor{#1}{test}}~\texttt{#1}}
 \newcommand{\hrefcol}[2]{\textcolor{cyan}{\href{#1}{#2}}}
@@ -26,6 +45,7 @@
 \course{Laurea Triennale in Sicurezza dei Sistemi e delle Reti Informatiche}
 \author{\href{mailto:niccolo.volonte@studenti.unimi.it}{Niccolò Volontè}}
 \IDnumber{20642A}
+\date{16 luglio 2025}
 
 % ==================///==================///==================///
 % ==================///  START PRESENTATION
@@ -41,54 +61,42 @@
 % ==================/// BODY'S PRESENTATION
 % ==================///==================///==================///
 
-\begin{frame}{Introduzione e contesto}
-    \framesubtitle{Cloud Computing e Compliance}
+\begin{frame}{Introduzione e obiettivi}
+    \framesubtitle{Contesto e finalità}
     \begin{itemize}
-        \item Evoluzione del Cloud Computing
-        \item Distinzione \emph{IaaS}, \emph{PaaS} e \emph{SaaS}
-        \item Amazon Web Services (\emph{AWS}) 
-        \item Compliance come sfida
+        \item Evoluzione del Cloud Computing e modelli (IaaS, PaaS, SaaS)
+        \item AWS come contesto di riferimento
+        \item La compliance come sfida attuale
+        \item Sviluppo di sonde per verificare la compliance in ambienti Cloud
+        \item Integrazione nella piattaforma Moon Cloud
     \end{itemize}
 \end{frame}
 
-\begin{frame}{Obiettivi del lavoro}
-    \framesubtitle{Suite di sonde}
-    \begin{itemize}
-        \item Sviluppo di sonde che verificano la compliance
-        \item Integrazione con la piattaforma MoonCloud
-        \item Adeguamento a standard di sicurezza
-        \item Automatizzazione della verifica
-    \end{itemize}
-\end{frame}
 
-\begin{frame}{La compliance nel cloud}
-    \framesubtitle{Significato e importanza}
-    \begin{itemize}
-        \item Definizione di compliance
-        \item Rilevanza per la sicurezza informatica
-        \item Sfide specifiche del cloud
-    \end{itemize}
-\end{frame}
-
-\begin{frame}{Standard di riferimento}
-    \framesubtitle{Enti, direttive e normative}
+\begin{frame}{Compliance e standard nel cloud}
+    \framesubtitle{Significato, sfide e riferimenti normativi}
     \begin{columns}
-    \begin{column}{0.6\textwidth}
-        \begin{itemize}
-            \item Center for Internet Security (\emph{CIS}) -
-                \hrefcol{https://www.cisecurity.org/}{CIS AWS Foundations Benchmark}
-            \item National Institute of Standards and Technology (\emph{NIST}) - 
-                \hrefcol{https://www.nist.gov/}{NIST SP 800-53}
-        \end{itemize}
-    \end{column}
-    \begin{column}{0.4\textwidth}
-    \includegraphics[width=\textwidth]{assets/cisnist.png}
-    \end{column}
+        \begin{column}{0.6\textwidth}
+            \begin{itemize}
+                \item \textbf{Compliance:} rispetto di requisiti normativi e di sicurezza
+                \item Importanza crescente nel contesto cloud
+                \item Sfide legate alla gestione di risorse distribuite
+                \item \textbf{Standard} di riferimento:
+                \begin{itemize}
+                    \item Center for Internet Security (\emph{CIS}) - \hrefcol{https://www.cisecurity.org/}{CIS AWS Foundations Benchmark}
+                    \item National Institute of Standards and Technology (\emph{NIST}) - \hrefcol{https://www.nist.gov/}{NIST SP 800-53}
+                \end{itemize}
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.4\textwidth}
+            \includegraphics[width=\textwidth]{assets/cisnist.png}
+        \end{column}
     \end{columns}
 \end{frame}
 
+
 \begin{frame}{Standard di riferimento}
-    \framesubtitle{Esempio di controllo}
+    \framesubtitle{Esempio di controllo per \texttt{aws\_account}}
     \begin{mdframed}[backgroundcolor=statalegrey]
     \textbf{1.4 Ensure MFA is enabled for the 'root' user account (Automated)}
     \begin{itemize}
@@ -106,7 +114,7 @@
             \begin{itemize}
                 \item \emph{Python} come linguaggio di programmazione
                 \item \texttt{Boto3} per l'interazione con AWS
-                \item \emph{MoonCloud} come piattaforma di integrazione
+                \item \emph{Moon Cloud} come piattaforma di integrazione
             \end{itemize}
         \end{column}
         \begin{column}{0.6\textwidth}
@@ -124,7 +132,7 @@
     \end{columns}
 \end{frame}
 
-\begin{frame}{MoonCloud}
+\begin{frame}{Moon Cloud}
     \framesubtitle{Piattaforma, funzionalità e architettura}
     \begin{columns}
         \begin{column}{0.7\textwidth}
@@ -159,31 +167,57 @@
     \end{columns}
 \end{frame}
 
-\begin{frame}{Esempio di sonda}
-    \framesubtitle{Sonda \texttt{aws\_sqs}}
-    \begin{columns}
-        \begin{column}{0.4\textwidth}
-            \begin{itemize}
-                \item Controlli relativi a crittografia, tagging, policy pubbliche
-                \item Basata su controlli di AWS Security Hub
-                \item Esempio di scansione multiregione
-                \item Integra parametri personalizzati via dashboard
-            \end{itemize}
-        \end{column}
-        \begin{column}{0.6\textwidth}
-            \begin{colorblock}[black]{statalegrey}{Implementazione multiregione}
-                \texttt{\textcolor{maincolor}{self}.clients = \string{\string}}\\
-                \texttt{\textcolor{maincolor}{for} idx, region in \textcolor{maincolor}{enumerate}(specific\_regions, start=1):}\\
-                    \texttt{    \textcolor{maincolor}{self}.clients[\textcolor{statalegreen}{f'client\_\string{idx\string}'}] = \textcolor{maincolor}{boto3}.client(}\\
-                    \texttt{    \textcolor{statalegreen}{'sqs'},}\\
-                    \texttt{    aws\_access\_key\_id=\textcolor{statalegreen}{'YOUR\_ACCESS\_KEY'},}\\
-                    \texttt{    aws\_secret\_access\_key=\textcolor{statalegreen}{'YOUR\_SECRET\_KEY'}}\\
-                    \texttt{    region\_name=\textcolor{statalegreen}{'eu-central-1'},}\\
-                    \texttt{)}\\
-            \end{colorblock}
-        \end{column}
-    \end{columns}
+% \begin{frame}{Esempio di sonda}
+%     \framesubtitle{Sonda \texttt{aws\_sqs}}
+%     \begin{columns}
+%         \begin{column}{0.4\textwidth}
+%             \begin{itemize}
+%                 \item Controlli relativi a crittografia, tagging, policy pubbliche
+%                 \item Basata su controlli di AWS Security Hub
+%                 \item Esempio di scansione multiregione
+%                 \item Integra parametri personalizzati via dashboard
+%             \end{itemize}
+%         \end{column}
+%         \begin{column}{0.6\textwidth}
+%             \begin{colorblock}[black]{statalegrey}{Implementazione multiregione}
+%                 \texttt{\textcolor{maincolor}{self}.clients = \string{\string}}\\
+%                 \texttt{\textcolor{maincolor}{for} idx, region in \textcolor{maincolor}{enumerate}(specific\_regions, start=1):}\\
+%                     \texttt{    \textcolor{maincolor}{self}.clients[\textcolor{statalegreen}{f'client\_\string{idx\string}'}] = \textcolor{maincolor}{boto3}.client(}\\
+%                     \texttt{    \textcolor{statalegreen}{'sqs'},}\\
+%                     \texttt{    aws\_access\_key\_id=\textcolor{statalegreen}{'YOUR\_ACCESS\_KEY'},}\\
+%                     \texttt{    aws\_secret\_access\_key=\textcolor{statalegreen}{'YOUR\_SECRET\_KEY'}}\\
+%                     \texttt{    region\_name=\textcolor{statalegreen}{'eu-central-1'},}\\
+%                     \texttt{)}\\
+%             \end{colorblock}
+%         \end{column}
+%     \end{columns}
+% \end{frame}
+
+\begin{frame}[fragile]{Esempio: \texttt{aws\_sqs}}
+\framesubtitle{Controllo cifratura, tag e accesso pubblico}
+\begin{itemize}
+    \item Controlli relativi a crittografia, tagging, e policy pubbliche
+    \item Integra scansione multiregione
+    \item Ogni controllo è una funzione separata
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Snippet: gestione client multiregione e controllo SQS.1}
+\begin{lstlisting}[style=statalepython, basicstyle=\scriptsize\ttfamily]
+specific_regions = re.split(r'[,;\s]+', raw_regions) if raw_regions else []
+for idx, region in enumerate(specific_regions[:6], start=1):
+    self.clients[f'client_{idx}'] = boto3.client(...)
+# ... sqs_check_1 ...
+attr_response = client.get_queue_attributes(
+    AttributeNames=['SqsManagedSseEnabled'],
+    QueueUrl=queue_url
+)
+if attr_response.get('Attributes', {}).get('SqsManagedSseEnabled') == 'true':
+    encrypted_queues.append(...)
+else unencrypted_queues.append(...)
+\end{lstlisting}
 \end{frame}
+
 
 \begin{frame}{\texttt{aws\_vulnerability}}
     \framesubtitle{Sonda per la gestione CVE}
@@ -193,55 +227,62 @@
             \item Sonda custom che elenca CVE trovate da AWS Inspector
             \item Analisi di Elastic Container Registry (\emph{ECR}), 
                 Elastic Compute Cloud (\emph{EC2}) e \emph{Lambda} functions
-            \item Supporta una visione dinamica del rischio
+            \item Consente una visione dinamica del rischio
         \end{itemize}
         \end{column}
         \begin{column}{0.6\textwidth}
-            \includegraphics[width=0.7\textwidth]{assets/mooncloud.png}
+            \includegraphics[width=\textwidth]{assets/Screenshot 2025-07-08 at 10.56.53.png}
         \end{column}
     \end{columns}
 \end{frame}
 
-\begin{frame}{Esecuzione e integrazione}
-    \framesubtitle{Gestione I/O e deploy}
-    \begin{itemize}
-        \item Input via JSON schema con validazione
-        \item Gestione sicura delle credenziali
-        \item Pipeline CI/CD su GitLab per ogni sonda
-        \item Integrazione tramite backend di MoonCloud
-    \end{itemize}
+\begin{frame}{Deploy e output delle sonde}
+    \framesubtitle{Esecuzione, integrazione e risultati}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \textbf{Esecuzione e integrazione}
+            \begin{itemize}
+                \item Pipeline CI/CD su GitLab per ogni sonda
+                \item Input via JSON schema con validazione
+                \item Gestione delle credenziali
+                \item Integrazione nel backend di Moon Cloud
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{Risultati ottenuti}
+            \begin{itemize}
+                \item Controlli strutturati in blocchi
+                \item Risultato numerico e descrittivo
+                \item Sommario con percentuale di conformità
+                \item Log dettagliato con eccezioni gestite
+            \end{itemize}
+        \end{column}
+    \end{columns}
 \end{frame}
 
-\begin{frame}{Risultati ottenuti}
-    \framesubtitle{Visualizzazione sulla dashboard}
-    \begin{itemize}
-        \item Controlli strutturati in blocchi
-        \item Risultato numerico e descrittivo
-        \item Sommario con percentuale di conformità
-        \item Log dettagliato con eccezioni gestite
-    \end{itemize}
-\end{frame}
 
-\begin{frame}{Competenze acquisite}
-    \framesubtitle{Strumenti, metodologie e conoscenze}
-    \begin{itemize}
-        \item Tecnologie: Python, AWS, Docker, GitLab CI/CD
-        \item Sviluppo modulare e orientato alla sicurezza
-        \item Analisi di documentazione tecnica
-        \item Esperienza in un progetto reale su una piattaforma in uso
-    \end{itemize}
-\end{frame}
-
-\begin{frame}{Conclusione e sviluppi futuri}
+\begin{frame}{Competenze acquisite e sviluppi futuri}
     \framesubtitle{Riflessioni e prospettive}
-    \begin{itemize}
-        \item Sviluppo di 13 sonde operative
-        \item Contributo concreto all'evoluzione di MoonCloud
-        \vspace{0.5cm}
-        \item Implementazione multiregione
-        \item Estensione a nuovi benchmark e cloud provider
-    \end{itemize}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \textbf{Competenze acquisite}
+            \begin{itemize}
+                \item Python, AWS, Docker, GitLab CI/CD                \item Analisi di documentazione tecnica
+                \item Sviluppo modulare su un framework esistente
+                \item Esperienza su progetto reale (Moon Cloud)
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{Sviluppi futuri}
+            \begin{itemize}
+                \item Estensione a nuovi benchmark e servizi AWS
+                \item Apertura verso altri cloud provider
+                \item Supporto multi regione
+            \end{itemize}
+        \end{column}
+    \end{columns}
 \end{frame}
+
 
 
 % ==================///==================///==================///

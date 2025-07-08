@@ -157,6 +157,8 @@
     %
     %			RINGRAZIAMENTI (facoltativi)
     %
+
+    \cleardoublepage
     
     \prefacesection{Ringraziamenti}
 
@@ -172,15 +174,12 @@
     %
     %			Creazione automatica dell'indice
     %
-    
     \afterpreface
-    
-    % 
-    %			CAPITOLO 1: Introduzione o Abstract
-    % 
-    
+
+    \shipout\null
+        
     \include{src/introduzione}
-    
+
     \include{src/arte}
 
     \include{src/tecnologie}
@@ -215,6 +214,9 @@
     \bibliography{bibliografia}
     
     % Pagina di chiusura
+    
     \closingpage
+
+    \shipout\null
     
     \end{document}
