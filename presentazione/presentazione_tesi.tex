@@ -64,11 +64,11 @@
 \begin{frame}{Introduzione e obiettivi}
     \framesubtitle{Contesto e finalità}
     \begin{itemize}
-        \item Evoluzione del Cloud Computing e modelli (IaaS, PaaS, SaaS)
-        \item AWS come contesto di riferimento
-        \item La compliance come sfida attuale
-        \item Sviluppo di sonde per verificare la compliance in ambienti Cloud
-        \item Integrazione nella piattaforma Moon Cloud
+        \item<1-> Evoluzione del Cloud Computing e modelli (IaaS, PaaS, SaaS)
+        \item<2-> AWS come contesto di riferimento
+        \item<3-> La compliance come sfida attuale
+        \item<4-> Sviluppo di sonde per verificare la compliance in ambienti Cloud
+        \item<5-> Integrazione nella piattaforma Moon Cloud
     \end{itemize}
 \end{frame}
 
@@ -78,17 +78,17 @@
     \begin{columns}
         \begin{column}{0.6\textwidth}
             \begin{itemize}
-                \item \textbf{Compliance:} rispetto di requisiti normativi e di sicurezza
+                \item<1-> \textbf{Compliance:} rispetto di requisiti normativi e di sicurezza
                 \item Importanza crescente nel contesto cloud
                 \item Sfide legate alla gestione di risorse distribuite
-                \item \textbf{Standard} di riferimento:
+                \item<2-> \textbf{Standard} di riferimento:
                 \begin{itemize}
                     \item Center for Internet Security (\emph{CIS}) - \hrefcol{https://www.cisecurity.org/}{CIS AWS Foundations Benchmark}
                     \item National Institute of Standards and Technology (\emph{NIST}) - \hrefcol{https://www.nist.gov/}{NIST SP 800-53}
                 \end{itemize}
             \end{itemize}
         \end{column}
-        \begin{column}{0.4\textwidth}
+        \begin{column}<2->{0.4\textwidth}
             \includegraphics[width=\textwidth]{assets/cisnist.png}
         \end{column}
     \end{columns}
@@ -110,14 +110,14 @@
 \begin{frame}{Tecnologie utilizzate}
     \framesubtitle{Linguaggi e strumenti}
     \begin{columns}
-        \begin{column}{0.4\textwidth}
+        \begin{column}<1->{0.4\textwidth}
             \begin{itemize}
                 \item \emph{Python} come linguaggio di programmazione
                 \item \texttt{Boto3} per l'interazione con AWS
                 \item \emph{Moon Cloud} come piattaforma di integrazione
             \end{itemize}
         \end{column}
-        \begin{column}{0.6\textwidth}
+        \begin{column}<2->{0.6\textwidth}
             \begin{colorblock}[black]{statalegrey}{Esempio di utilizzo di Boto3}
                 \texttt{\textcolor{maincolor}{import} boto3}\\
                 \texttt{client = boto3.\textcolor{maincolor}{client}(}\\
@@ -137,10 +137,10 @@
     \begin{columns}
         \begin{column}{0.7\textwidth}
             \begin{itemize}
-                \item Esegue sonde di assurance su infrastrutture ICT
-                \item Architettura basata su immagini Docker e CI/CD
-                \item Dashboard per la gestione dei target, credenziali e risultati
-                \item Modello a stati finiti: \textit{forward}, \textit{rollback}
+                \item<1-> Esegue sonde di assurance su infrastrutture ICT
+                \item<2-> Architettura basata su immagini Docker e CI/CD
+                \item<3-> Dashboard per la gestione dei target, credenziali e risultati
+                \item<4-> Modello a stati finiti: \textit{forward}, \textit{rollback}
             \end{itemize}
         \end{column}
         \begin{column}{0.3\textwidth}
@@ -154,14 +154,14 @@
     \begin{columns}
         \begin{column}{0.6\textwidth}
             \begin{itemize}
-                \item Codice Python all'interno del file \texttt{probe.py}
+                \item<1-> Codice Python all'interno del file \texttt{probe.py}
                 \item \texttt{schema.json} e \texttt{test.json} per input validato
                 \item \texttt{Dockerfile}, \texttt{.gitlab-ci.yml} per la pipeline
-                \item Struttura con \texttt{atoms} eseguiti in sequenza
-                \item Output \emph{strutturato}
+                \item<2-> Struttura con \texttt{atoms} eseguiti in sequenza
+                \item<2-> Output \emph{strutturato}
             \end{itemize}
         \end{column}
-        \begin{column}{0.4\textwidth}
+        \begin{column}<2->{0.4\textwidth}
             \includegraphics[width=\textwidth]{assets/flow.drawio.png}
         \end{column}
     \end{columns}
@@ -196,18 +196,19 @@
 \begin{frame}[fragile]{Esempio: \texttt{aws\_sqs}}
 \framesubtitle{Controllo cifratura, tag e accesso pubblico}
 \begin{itemize}
-    \item Controlli relativi a crittografia, tagging, e policy pubbliche
-    \item Integra scansione multiregione
-    \item Ogni controllo è una funzione separata
+    \item<1-> Controlli relativi a crittografia, tagging, e policy pubbliche
+    \item<2-> Integra scansione multiregione
+    \item<3-> Ogni controllo è una funzione separata
 \end{itemize}
 
-\vspace{0.3cm}
 \textbf{Snippet: gestione client multiregione e controllo SQS.1}
 \begin{lstlisting}[style=statalepython, basicstyle=\scriptsize\ttfamily]
 specific_regions = re.split(r'[,;\s]+', raw_regions) if raw_regions else []
 for idx, region in enumerate(specific_regions[:6], start=1):
     self.clients[f'client_{idx}'] = boto3.client(...)
-# ... sqs_check_1 ...
+\end{lstlisting}
+
+\begin{lstlisting}[style=statalepython, basicstyle=\scriptsize\ttfamily]
 attr_response = client.get_queue_attributes(
     AttributeNames=['SqsManagedSseEnabled'],
     QueueUrl=queue_url
@@ -216,7 +217,9 @@ if attr_response.get('Attributes', {}).get('SqsManagedSseEnabled') == 'true':
     encrypted_queues.append(...)
 else unencrypted_queues.append(...)
 \end{lstlisting}
+
 \end{frame}
+
 
 
 \begin{frame}{\texttt{aws\_vulnerability}}
@@ -224,13 +227,13 @@ else unencrypted_queues.append(...)
     \begin{columns}
         \begin{column}{0.4\textwidth}
             \begin{itemize}
-            \item Sonda custom che elenca CVE trovate da AWS Inspector
-            \item Analisi di Elastic Container Registry (\emph{ECR}), 
+            \item<1-> Sonda custom che elenca CVE trovate da AWS Inspector
+            \item<2-> Analisi di Elastic Container Registry (\emph{ECR}), 
                 Elastic Compute Cloud (\emph{EC2}) e \emph{Lambda} functions
-            \item Consente una visione dinamica del rischio
+            \item<3-> Consente una visione dinamica del rischio
         \end{itemize}
         \end{column}
-        \begin{column}{0.6\textwidth}
+        \begin{column}<4->{0.6\textwidth}
             \includegraphics[width=\textwidth]{assets/Screenshot 2025-07-08 at 10.56.53.png}
         \end{column}
     \end{columns}
@@ -239,7 +242,7 @@ else unencrypted_queues.append(...)
 \begin{frame}{Deploy e output delle sonde}
     \framesubtitle{Esecuzione, integrazione e risultati}
     \begin{columns}
-        \begin{column}{0.5\textwidth}
+        \begin{column}<1->{0.5\textwidth}
             \textbf{Esecuzione e integrazione}
             \begin{itemize}
                 \item Pipeline CI/CD su GitLab per ogni sonda
@@ -248,7 +251,7 @@ else unencrypted_queues.append(...)
                 \item Integrazione nel backend di Moon Cloud
             \end{itemize}
         \end{column}
-        \begin{column}{0.5\textwidth}
+        \begin{column}<2->{0.5\textwidth}
             \textbf{Risultati ottenuti}
             \begin{itemize}
                 \item Controlli strutturati in blocchi
@@ -264,7 +267,7 @@ else unencrypted_queues.append(...)
 \begin{frame}{Competenze acquisite e sviluppi futuri}
     \framesubtitle{Riflessioni e prospettive}
     \begin{columns}
-        \begin{column}{0.5\textwidth}
+        \begin{column}<1->{0.5\textwidth}
             \textbf{Competenze acquisite}
             \begin{itemize}
                 \item Python, AWS, Docker, GitLab CI/CD                \item Analisi di documentazione tecnica
@@ -272,7 +275,7 @@ else unencrypted_queues.append(...)
                 \item Esperienza su progetto reale (Moon Cloud)
             \end{itemize}
         \end{column}
-        \begin{column}{0.5\textwidth}
+        \begin{column}<2->{0.5\textwidth}
             \textbf{Sviluppi futuri}
             \begin{itemize}
                 \item Estensione a nuovi benchmark e servizi AWS
