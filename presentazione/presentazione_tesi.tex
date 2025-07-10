@@ -64,14 +64,13 @@
 \begin{frame}{Introduzione e obiettivi}
     \framesubtitle{Contesto e finalità}
     \begin{itemize}
-        \item<1-> Evoluzione del Cloud Computing e modelli (IaaS, PaaS, SaaS)
-        \item<2-> AWS come contesto di riferimento
-        \item<3-> La compliance come sfida attuale
-        \item<4-> Sviluppo di sonde per verificare la compliance in ambienti Cloud
-        \item<5-> Integrazione nella piattaforma Moon Cloud
+        \item<1-> Crescita del Cloud Computing: nuovi modelli di servizio (IaaS, PaaS, SaaS)
+        \item<2-> AWS: il cloud provider più diffuso su scala globale
+        \item<3-> La compliance nel cloud: una sfida continua per sicurezza e conformità
+        \item<4-> \emph{Obiettivo}: sviluppare sonde automatizzabili per verifiche di compliance su AWS
+        \item<5-> Integrazione nella piattaforma Moon Cloud per l'esecuzione delle stesse
     \end{itemize}
 \end{frame}
-
 
 \begin{frame}{Compliance e standard nel cloud}
     \framesubtitle{Significato, sfide e riferimenti normativi}
@@ -132,6 +131,18 @@
     \end{columns}
 \end{frame}
 
+\begin{frame}{Analisi della documentazione}
+    \framesubtitle{AWS Security Hub, Boto3 Account}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \includegraphics[width=\textwidth]{assets/sechubacc.png}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \includegraphics[width=\textwidth]{assets/boto3acc.png}
+        \end{column}
+    \end{columns}
+\end{frame}
+
 \begin{frame}{Moon Cloud}
     \framesubtitle{Piattaforma, funzionalità e architettura}
     \begin{columns}
@@ -163,6 +174,34 @@
         \end{column}
         \begin{column}<2->{0.4\textwidth}
             \includegraphics[width=\textwidth]{assets/flow.drawio.png}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Suite di sonde}
+    \framesubtitle{Elenco delle sonde sviluppate}
+    \begin{columns}
+        \begin{column}<1->{0.5\textwidth}
+            \textbf{13} sonde sviluppate con \textbf{51} controlli
+            \begin{itemize}
+                \item \texttt{aws\_sqs}
+                \item \texttt{aws\_inspector}
+                \item \texttt{aws\_iam}
+                \item \texttt{aws\_ec2}
+                \item \texttt{aws\_s3}
+                \item \texttt{aws\_account}
+            \end{itemize}
+        \end{column}
+        \begin{column}<2->{0.5\textwidth}
+            \begin{itemize}
+                \item \texttt{aws\_config}
+                \item \texttt{aws\_cloudtrail}
+                \item  \texttt{aws\_efs}
+                \item  \texttt{aws\_kms}
+                \item  \texttt{aws\_rds}
+                \item  \texttt{aws\_eks}
+                \item <3-> \texttt{aws\_vulnerability}
+            \end{itemize}
         \end{column}
     \end{columns}
 \end{frame}
@@ -234,7 +273,7 @@ else unencrypted_queues.append(...)
         \end{itemize}
         \end{column}
         \begin{column}<4->{0.6\textwidth}
-            \includegraphics[width=\textwidth]{assets/cvepaas.png}
+            \includegraphics[width=\textwidth]{assets/cveiaas.png}
         \end{column}
     \end{columns}
 \end{frame}
@@ -254,10 +293,10 @@ else unencrypted_queues.append(...)
         \begin{column}<2->{0.5\textwidth}
             \textbf{Risultati ottenuti}
             \begin{itemize}
-                \item Controlli strutturati in blocchi
                 \item Risultato numerico e descrittivo
                 \item Sommario con percentuale di conformità
                 \item Log dettagliato con eccezioni gestite
+                \item Conformità a standard come CIS e NIST
             \end{itemize}
         \end{column}
     \end{columns}
@@ -270,9 +309,9 @@ else unencrypted_queues.append(...)
         \begin{column}<1->{0.5\textwidth}
             \textbf{Competenze acquisite}
             \begin{itemize}
-                \item Python, AWS, Docker, GitLab CI/CD                \item Analisi di documentazione tecnica
-                \item Sviluppo modulare su un framework esistente
-                \item Esperienza su progetto reale (Moon Cloud)
+                \item Competenze tecniche in Python e Docker
+                \item Analisi di documentazione tecnica
+                \item Esperienza su progetto reale e relativo framework: \emph{Moon Cloud}
             \end{itemize}
         \end{column}
         \begin{column}<2->{0.5\textwidth}
