@@ -144,6 +144,12 @@
 \def\@courseLabel{}
 \def\@IDnumber{}
 
+\def\@relatore{}
+\newcommand{\relatore}[1]{\def\@relatore{#1}}
+
+\def\@correlatore{}
+\newcommand{\correlatore}[1]{\def\@correlatore{#1}}
+
 \newcommand{\course}[1]{\def\@courseLabel{#1}}
 \newcommand{\IDnumber}[1]{\def\@IDnumber{#1}}
 
@@ -161,7 +167,11 @@
     {\usebeamerfont{subtitle}\@courseLabel}
     
     {\usebeamerfont{author}\usebeamercolor[fg]{author}\textbf{\insertauthor} \ifdefempty{\@IDnumber}{}{(\@IDnumber)}}
+
+    {\usebeamerfont{author}\usebeamercolor[fg]{author}Relatore: \@relatore}
   
+    {\usebeamerfont{author}\usebeamercolor[fg]{author}Correlatore: \@correlatore}
+
     {\usebeamerfont{date}\usebeamercolor[fg]{date}\insertdate}
   \end{beamercolorbox}
 }
