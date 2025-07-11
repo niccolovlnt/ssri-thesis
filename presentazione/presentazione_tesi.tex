@@ -67,18 +67,19 @@
         \begin{column}{0.7\textwidth}
                 \begin{itemize}
                     \item<1-> Crescita del Cloud Computing e della sua adozione
-                    \item<2-> \emph{AWS}: il cloud provider più diffuso su scala globale
-                    \item<3-> La \emph{compliance} nel cloud: sfide legate alla gestione di risorse distribuite
+                    \item<3-> La \emph{compliance} nel cloud: ambiente dinamico rende difficile la verifica del profilo di sicurezza
                     \item<4-> \textbf{Standard di riferimento}:
                     \begin{itemize}
                         \item CIS AWS Foundations Benchmark
                         \item NIST SP 800-53
                     \end{itemize}
-                    \item<5-> \textbf{Obiettivo:} sviluppare sonde automatizzabili per verifiche di compliance su AWS, integrabili nella piattaforma Moon Cloud
+                    \item<5-> \textbf{Obiettivo:} \emph{sviluppare} \textbf{sonde} automatizzabili per verifiche di \textbf{compliance} su \textbf{AWS}, \emph{integrabili} nella piattaforma \textbf{Moon Cloud}
                 \end{itemize}
         \end{column}
-        \begin{column}<4->{0.3\textwidth}
-            \includegraphics[width=\textwidth]{assets/cisnist.png}
+        \begin{column}{0.3\textwidth}
+            \includegraphics<2->[width=\textwidth]{assets/statista.jpeg}
+            \vspace{1em}
+            \includegraphics<4->[width=\textwidth]{assets/cisnist.png}
         \end{column}
     \end{columns}
 \end{frame}
@@ -97,30 +98,30 @@
 \end{mdframed}
 \end{frame}
 
-\begin{frame}{Tecnologie utilizzate}
-    \framesubtitle{Linguaggi e strumenti}
-    \begin{columns}
-        \begin{column}<1->{0.4\textwidth}
-            \begin{itemize}
-                \item \emph{Python} come linguaggio di programmazione
-                \item \texttt{Boto3} per l'interazione con AWS
-                \item \emph{Moon Cloud} come piattaforma di integrazione
-            \end{itemize}
-        \end{column}
-        \begin{column}<2->{0.6\textwidth}
-            \begin{colorblock}[black]{statalegrey}{Esempio di utilizzo di Boto3}
-                \texttt{\textcolor{maincolor}{import} boto3}\\
-                \texttt{client = boto3.\textcolor{maincolor}{client}(}\\
-                \texttt{    \textcolor{statalegreen}{'sqs'},}\\
-                \texttt{    region\_name=\textcolor{statalegreen}{'eu-central-1'},}\\
-                \texttt{    aws\_access\_key\_id=\textcolor{statalegreen}{'YOUR\_ACCESS\_KEY'},}\\
-                \texttt{    aws\_secret\_access\_key=\textcolor{statalegreen}{'YOUR\_SECRET\_KEY'}}\\
-                \texttt{)}\\
-                \texttt{response = client.\textcolor{maincolor}{list\_queues}()}\\
-            \end{colorblock}
-        \end{column}
-    \end{columns}
-\end{frame}
+% \begin{frame}{Tecnologie utilizzate}
+%     \framesubtitle{Linguaggi e strumenti}
+%     \begin{columns}
+%         \begin{column}<1->{0.4\textwidth}
+%             \begin{itemize}
+%                 \item \emph{Python} come linguaggio di programmazione
+%                 \item \texttt{Boto3} per l'interazione con AWS
+%                 \item \emph{Moon Cloud} come piattaforma di integrazione
+%             \end{itemize}
+%         \end{column}
+%         \begin{column}<2->{0.6\textwidth}
+%             \begin{colorblock}[black]{statalegrey}{Esempio di utilizzo di Boto3}
+%                 \texttt{\textcolor{maincolor}{import} boto3}\\
+%                 \texttt{client = boto3.\textcolor{maincolor}{client}(}\\
+%                 \texttt{    \textcolor{statalegreen}{'sqs'},}\\
+%                 \texttt{    region\_name=\textcolor{statalegreen}{'eu-central-1'},}\\
+%                 \texttt{    aws\_access\_key\_id=\textcolor{statalegreen}{'YOUR\_ACCESS\_KEY'},}\\
+%                 \texttt{    aws\_secret\_access\_key=\textcolor{statalegreen}{'YOUR\_SECRET\_KEY'}}\\
+%                 \texttt{)}\\
+%                 \texttt{response = client.\textcolor{maincolor}{list\_queues}()}\\
+%             \end{colorblock}
+%         \end{column}
+%     \end{columns}
+% \end{frame}
 
 \begin{frame}{Analisi della documentazione}
     \framesubtitle{AWS Security Hub, Boto3 Account}
@@ -130,41 +131,6 @@
         \end{column}
         \begin{column}{0.5\textwidth}
             \includegraphics[width=\textwidth]{assets/boto3acc.png}
-        \end{column}
-    \end{columns}
-\end{frame}
-
-\begin{frame}{Moon Cloud}
-    \framesubtitle{Piattaforma, funzionalità e architettura}
-    \begin{columns}
-        \begin{column}{0.7\textwidth}
-            \begin{itemize}
-                \item<1-> Esegue sonde di assurance su infrastrutture ICT
-                \item<2-> Architettura basata su immagini Docker e CI/CD
-                \item<3-> Dashboard per la gestione dei target, credenziali e risultati
-                \item<4-> Modello a stati finiti: \textit{forward}, \textit{rollback}
-            \end{itemize}
-        \end{column}
-        \begin{column}{0.3\textwidth}
-            \includegraphics[width=\textwidth]{assets/mooncloud.png}
-        \end{column}
-    \end{columns}
-\end{frame}
-
-\begin{frame}{Struttura di una sonda}
-    \framesubtitle{Componenti per la creazione}
-    \begin{columns}
-        \begin{column}{0.6\textwidth}
-            \begin{itemize}
-                \item<1-> Codice Python all'interno del file \texttt{probe.py}
-                \item \texttt{schema.json} e \texttt{test.json} per input validato
-                \item \texttt{Dockerfile}, \texttt{.gitlab-ci.yml} per la pipeline
-                \item<2-> Struttura con \texttt{atoms} eseguiti in sequenza
-                \item<2-> Output \emph{strutturato}
-            \end{itemize}
-        \end{column}
-        \begin{column}<2->{0.4\textwidth}
-            \includegraphics[width=\textwidth]{assets/flow.drawio.png}
         \end{column}
     \end{columns}
 \end{frame}
@@ -191,37 +157,46 @@
                 \item  \texttt{aws\_kms}
                 \item  \texttt{aws\_rds}
                 \item  \texttt{aws\_eks}
-                \item <3-> \texttt{aws\_vulnerability}
             \end{itemize}
+        \end{column}
+    \end{columns}
+    \vspace{1em}
+    \begin{itemize}
+        \item <3-> \texttt{aws\_vulnerability}: aggregazione vulnerabilità da AWS Inspector (sonda fuori standard)
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Moon Cloud}
+    \framesubtitle{Piattaforma, funzionalità e architettura}
+    \begin{columns}
+        \begin{column}{0.4\textwidth}
+            \begin{itemize}
+                \item<1-> Esegue sonde di assurance su infrastrutture ICT
+                \item<2-> Architettura basata su immagini Docker e CI/CD
+                \item<3-> Dashboard per la gestione dei target, credenziali e risultati
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.6\textwidth}
+            \includegraphics[width=\textwidth]{assets/dashboad.png}
         \end{column}
     \end{columns}
 \end{frame}
 
-% \begin{frame}{Esempio di sonda}
-%     \framesubtitle{Sonda \texttt{aws\_sqs}}
-%     \begin{columns}
-%         \begin{column}{0.4\textwidth}
-%             \begin{itemize}
-%                 \item Controlli relativi a crittografia, tagging, policy pubbliche
-%                 \item Basata su controlli di AWS Security Hub
-%                 \item Esempio di scansione multiregione
-%                 \item Integra parametri personalizzati via dashboard
-%             \end{itemize}
-%         \end{column}
-%         \begin{column}{0.6\textwidth}
-%             \begin{colorblock}[black]{statalegrey}{Implementazione multiregione}
-%                 \texttt{\textcolor{maincolor}{self}.clients = \string{\string}}\\
-%                 \texttt{\textcolor{maincolor}{for} idx, region in \textcolor{maincolor}{enumerate}(specific\_regions, start=1):}\\
-%                     \texttt{    \textcolor{maincolor}{self}.clients[\textcolor{statalegreen}{f'client\_\string{idx\string}'}] = \textcolor{maincolor}{boto3}.client(}\\
-%                     \texttt{    \textcolor{statalegreen}{'sqs'},}\\
-%                     \texttt{    aws\_access\_key\_id=\textcolor{statalegreen}{'YOUR\_ACCESS\_KEY'},}\\
-%                     \texttt{    aws\_secret\_access\_key=\textcolor{statalegreen}{'YOUR\_SECRET\_KEY'}}\\
-%                     \texttt{    region\_name=\textcolor{statalegreen}{'eu-central-1'},}\\
-%                     \texttt{)}\\
-%             \end{colorblock}
-%         \end{column}
-%     \end{columns}
-% \end{frame}
+\begin{frame}{Struttura di una sonda}
+    \framesubtitle{Componenti per la creazione}
+    \begin{columns}
+        \begin{column}{0.6\textwidth}
+            \begin{itemize}
+                \item <1-> Struttura con \texttt{atoms} eseguiti in sequenza
+                \item <2-> Modello a stati finiti: \textbf{forward} e \textbf{rollback}
+                \item <3-> Output \emph{strutturato}
+            \end{itemize}
+        \end{column}
+        \begin{column}<1->{0.4\textwidth}
+            \includegraphics[width=\textwidth]{assets/flow.drawio.png}
+        \end{column}
+    \end{columns}
+\end{frame}
 
 \begin{frame}[fragile]{Esempio: \texttt{aws\_sqs}}
 \framesubtitle{Controllo cifratura, tag e accesso pubblico}
@@ -251,13 +226,12 @@ else unencrypted_queues.append(...)
 \end{frame}
 
 
-
 \begin{frame}{\texttt{aws\_vulnerability}}
     \framesubtitle{Sonda per la gestione CVE}
     \begin{columns}
         \begin{column}{0.4\textwidth}
             \begin{itemize}
-            \item<1-> Sonda custom che elenca CVE trovate da AWS Inspector
+            \item<1-> Sonda che non aderisce a standard ma che elenca CVE trovate da AWS Inspector
             \item<2-> Analisi di Elastic Container Registry (\emph{ECR}), 
                 Elastic Compute Cloud (\emph{EC2}) e \emph{Lambda} functions
             \item<3-> Consente una visione dinamica del rischio
@@ -272,37 +246,32 @@ else unencrypted_queues.append(...)
 \begin{frame}{Deploy e output delle sonde}
     \framesubtitle{Esecuzione, integrazione e risultati}
     \begin{columns}
-        \begin{column}<1->{0.5\textwidth}
+        \begin{column}<1->{0.4\textwidth}
             \textbf{Esecuzione e integrazione}
             \begin{itemize}
                 \item Pipeline CI/CD su GitLab per ogni sonda
-                \item Input via JSON schema con validazione
-                \item Gestione delle credenziali
-                \item Integrazione nel backend di Moon Cloud
+                \item Definizione rigorosa di \emph{Input} e \emph{Output}
+                \item Definizione nel backend di Moon Cloud
+                \item Integrazione nel frontend di Moon Cloud con \emph{template form}
             \end{itemize}
         \end{column}
-        \begin{column}<2->{0.5\textwidth}
+        \begin{column}<2->{0.6\textwidth}
+            \includegraphics[width=\textwidth]{assets/paas.png}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+
+\begin{frame}{Risultati ottenuti e sviluppi futuri}
+    \framesubtitle{Riflessioni e prospettive}
+    \begin{columns}
+        \begin{column}<1->{0.5\textwidth}
             \textbf{Risultati ottenuti}
             \begin{itemize}
                 \item Risultato numerico e descrittivo
                 \item Sommario con percentuale di conformità
                 \item Log dettagliato con eccezioni gestite
                 \item Conformità a standard come CIS e NIST
-            \end{itemize}
-        \end{column}
-    \end{columns}
-\end{frame}
-
-
-\begin{frame}{Competenze acquisite e sviluppi futuri}
-    \framesubtitle{Riflessioni e prospettive}
-    \begin{columns}
-        \begin{column}<1->{0.5\textwidth}
-            \textbf{Competenze acquisite}
-            \begin{itemize}
-                \item Competenze tecniche in Python e Docker
-                \item Analisi di documentazione tecnica
-                \item Esperienza su progetto reale e relativo framework: \emph{Moon Cloud}
             \end{itemize}
         \end{column}
         \begin{column}<2->{0.5\textwidth}
@@ -315,8 +284,6 @@ else unencrypted_queues.append(...)
         \end{column}
     \end{columns}
 \end{frame}
-
-
 
 % ==================///==================///==================///
 % ==================/// END PRESENTATION
