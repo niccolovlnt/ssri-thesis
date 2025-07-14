@@ -208,13 +208,15 @@
     \item<3-> Ogni controllo è una funzione separata
 \end{itemize}
 
+\begin{onlyenv}<4->
 \textbf{Snippet: gestione client multiregione e controllo SQS.1}
 \begin{lstlisting}[style=statalepython, basicstyle=\scriptsize\ttfamily]
 specific_regions = re.split(r'[,;\s]+', raw_regions) if raw_regions else []
 for idx, region in enumerate(specific_regions[:6], start=1):
     self.clients[f'client_{idx}'] = boto3.client(...)
 \end{lstlisting}
-
+\end{onlyenv}
+\begin{onlyenv}<5->
 \begin{lstlisting}[style=statalepython, basicstyle=\scriptsize\ttfamily]
 attr_response = client.get_queue_attributes(
     AttributeNames=['SqsManagedSseEnabled'],
@@ -224,7 +226,7 @@ if attr_response.get('Attributes', {}).get('SqsManagedSseEnabled') == 'true':
     encrypted_queues.append(...)
 else unencrypted_queues.append(...)
 \end{lstlisting}
-
+\end{onlyenv}
 \end{frame}
 
 
